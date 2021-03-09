@@ -2,7 +2,8 @@ import Head from 'next/head'
 import { ThemeProvider } from 'styled-components'
 import { GlobalStyle, theme } from '../../styles/styles'
 
-function MyApp({ Component, pageProps }) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+function MyApp({ Component, pageProps }): JSX.Element {
   return (
     <>
       <Head>
