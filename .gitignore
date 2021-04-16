@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+#remove npm
+package-lock.json
