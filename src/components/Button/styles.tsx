@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 export const Button = styled.button`
   /* max-width: 153px; */
-  height: 45px;
   background: ${({ theme }) => theme.colors.brand01};
   box-shadow: 0px 10px 25px rgba(0, 154, 147, 0.32);
   border-radius: 100px;
