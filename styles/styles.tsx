@@ -67,7 +67,7 @@ body {
   margin: 0;
   background:#fff;
   /* background:${theme.colors.linearGradiente}; */
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
