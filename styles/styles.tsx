@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
 
 export const theme = {
   colors: {
@@ -11,7 +11,6 @@ export const theme = {
     brand03: '#005955',
     gray02: '#6D7070',
   },
-
   breakpoint: {
     mobileS: '(max-width: 320px)',
     mobileM: '(max-width: 375px)',
@@ -24,7 +23,6 @@ export const theme = {
 }
 
 export const GlobalStyle = createGlobalStyle`
-
 * {
   margin: 0;
   padding: 0;
@@ -35,63 +33,39 @@ export const GlobalStyle = createGlobalStyle`
   outline: none;
   box-sizing: border-box;
 }
+
 button{
   border: none;
-  margin: 0;
-  padding: 0;
   width: auto;
   overflow: visible;
-  cursor:pointer;
+}
 
-}
 a:link {
-    font-weight: normal;
-    text-decoration: none;
-   
+  font-weight: normal;
+  text-decoration: none;
 }
+
 ul,
 li {
   list-style: none;
 }
+
 html,
 body {
   width: 100%;
   height: 100%;
   scroll-behavior: smooth;
   overflow-x: hidden;
-
 }
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  background:#fff;
-  /* background:${theme.colors.linearGradiente}; */
-  font-family: 'Roboto', sans-serif;
 
+body {
+  background:#fff;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  
 }
-
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
-
-
-
-`
-export const Container = styled.div`
-  width: 100%;
-  max-width: 1366px;
-  margin: 0 auto;
-
-  /* background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  background-attachment: fixed;
-  animation: opacityContainer 500ms linear; */
 `
