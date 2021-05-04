@@ -1,7 +1,12 @@
 import { AppProps } from 'next/app'
 import Head from 'next/head'
-import { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import { GlobalStyle, theme } from '../../styles/styles'
+import { Container as MuiContainer } from '@material-ui/core'
+
+const Container = styled(MuiContainer)`
+  height: 100vh;
+`
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
@@ -23,7 +28,9 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       </Head>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <Container>
+          <Component {...pageProps} />
+        </Container>
       </ThemeProvider>
     </>
   )
