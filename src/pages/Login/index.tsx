@@ -1,10 +1,5 @@
-import {
-  TextField as MuiTextField,
-  Box,
-  Button as MuiButton,
-  Link as MuiLink,
-} from '@material-ui/core'
-import styled from 'styled-components'
+import { TextField as MuiTextField, Box, Button as MuiButton, Link as MuiLink } from "@material-ui/core";
+import styled from "styled-components";
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -14,7 +9,7 @@ const StyledBox = styled(Box)`
   height: 100%;
   max-width: 38.4375rem;
   padding-top: 16%;
-`
+`;
 const TitleBox = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -32,7 +27,7 @@ const TitleBox = styled(Box)`
     font-size: 16px;
     line-height: 20px;
   }
-`
+`;
 
 const FieldBoxes = styled(Box)`
   display: flex;
@@ -42,21 +37,21 @@ const FieldBoxes = styled(Box)`
   @media screen and (max-width: 600px) {
     margin-top: 1.9rem;
   }
-`
+`;
 
 const TextField = styled(MuiTextField)`
   margin: 0.5rem 0 !important;
-`
+`;
 
 const Button = styled(MuiButton)`
   margin: 1.5625rem 0 !important;
-`
+`;
 
 const Link = styled(MuiLink)`
   align-self: center;
-`
+`;
 
-function Login(): JSX.Element {
+export function Login(): JSX.Element {
   return (
     <StyledBox>
       <TitleBox>
@@ -72,7 +67,5 @@ function Login(): JSX.Element {
         <Link>Recuperar senha</Link>
       </FieldBoxes>
     </StyledBox>
-  )
+  );
 }
-
-export default Login
