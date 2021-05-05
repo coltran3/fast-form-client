@@ -51,7 +51,7 @@ const Link = styled(MuiLink)`
   align-self: center;
 `;
 
-function Login(): JSX.Element {
+export function Login(): JSX.Element {
   return (
     <StyledBox>
       <TitleBox>
@@ -69,5 +69,3 @@ function Login(): JSX.Element {
     </StyledBox>
   );
 }
-
-export default Login;
