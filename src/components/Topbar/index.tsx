@@ -1,11 +1,11 @@
-import { AppBar, Toolbar, IconButton, Button } from '@material-ui/core'
-import RateReviewIcon from '@material-ui/icons/RateReview'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
-import styled from 'styled-components'
+import { AppBar, Toolbar, IconButton, Button } from "@material-ui/core";
+import RateReviewIcon from "@material-ui/icons/RateReview";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import styled from "styled-components";
 
 const Spacer = styled.div`
   flex-grow: 1;
-`
+`;
 
 export function TopBar(): JSX.Element {
   return (
@@ -24,5 +24,5 @@ export function TopBar(): JSX.Element {
         </IconButton>
       </Toolbar>
     </AppBar>
-  )
+  );
 }
