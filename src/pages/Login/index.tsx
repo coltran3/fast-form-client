@@ -1,5 +1,6 @@
 import { TextField as MuiTextField, Box, Button as MuiButton, Link as MuiLink } from "@material-ui/core";
 import styled from "styled-components";
+import { useAuthContext } from "../../stores";
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -8,8 +9,9 @@ const StyledBox = styled(Box)`
   width: 80%;
   height: 100%;
   max-width: 38.4375rem;
-  padding-top: 16%;
+  padding-top: 11rem;
 `;
+
 const TitleBox = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -52,6 +54,8 @@ const Link = styled(MuiLink)`
 `;
 
 export function Login(): JSX.Element {
+  const { setUser } = useAuthContext();
+
   return (
     <StyledBox>
       <TitleBox>
@@ -61,7 +65,7 @@ export function Login(): JSX.Element {
       <FieldBoxes>
         <TextField label="Matricula" variant="outlined" />
         <TextField label="Senha" variant="outlined" type="password" />
-        <Button variant="contained" color="primary" size="large">
+        <Button variant="contained" color="primary" size="large" onClick={() => setUser("oi")}>
           Entrar
         </Button>
         <Link>Recuperar senha</Link>

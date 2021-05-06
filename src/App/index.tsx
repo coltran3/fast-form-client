@@ -1,6 +1,7 @@
 import React from "react";
-import { Routes } from "./Routes";
 import { createGlobalStyle } from "styled-components";
+import { AuthStoreProvider, useAuthContext } from "../stores/";
+import { LoggedRoutes, OpenRoutes } from "./Routes/";
 
 const GlobalStyle = createGlobalStyle`
   html, 
@@ -36,8 +37,20 @@ export function App() {
     <>
       <React.Suspense fallback={null}>
         <GlobalStyle />
-        <Routes />
+        <AuthStoreProvider>
+          <AuthResolver />
+        </AuthStoreProvider>
       </React.Suspense>
     </>
   );
+}
+
+export function AuthResolver() {
+  const { user } = useAuthContext();
+
+  if (!user) {
+    return <LoggedRoutes />;
+  }
+
+  return <OpenRoutes />;
 }
