@@ -48,7 +48,7 @@ export function App() {
 export function AuthResolver() {
   const { user } = useAuthContext();
 
-  if (!user) {
+  if (user) {
     return <LoggedRoutes />;
   }
 

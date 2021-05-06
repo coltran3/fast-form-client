@@ -7,7 +7,11 @@ const Spacer = styled.div`
   flex-grow: 1;
 `;
 
-export function TopBar(): JSX.Element {
+interface Props {
+  logout: () => void;
+}
+
+export function TopBar({ logout }: Props): JSX.Element {
   return (
     <AppBar>
       <Toolbar>
@@ -19,7 +23,7 @@ export function TopBar(): JSX.Element {
         <Button color="inherit">Buscar avaliações</Button>
         <Button color="inherit">Histórico</Button>
         <Spacer />
-        <IconButton edge="end" color="inherit">
+        <IconButton edge="end" color="inherit" onClick={logout}>
           <ExitToAppIcon />
         </IconButton>
       </Toolbar>
