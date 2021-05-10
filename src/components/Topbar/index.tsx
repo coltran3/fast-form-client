@@ -1,3 +1,4 @@
+import { useHistory } from "react-router-dom";
 import { AppBar, Toolbar, IconButton, Button } from "@material-ui/core";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -9,9 +10,12 @@ const Spacer = styled.div`
 
 interface Props {
   logout: () => void;
+ 
 }
 
 export function TopBar({ logout }: Props): JSX.Element {
+  const history = useHistory();
+
   return (
     <AppBar>
       <Toolbar>
@@ -19,7 +23,7 @@ export function TopBar({ logout }: Props): JSX.Element {
           <RateReviewIcon />
         </IconButton>
         <Button color="inherit">Criar avaliação</Button>
-        <Button color="inherit">Minhas avaliações</Button>
+        <Button color="inherit" onClick={()=>history.push("/exams") }>Minhas avaliações</Button>
         <Button color="inherit">Buscar avaliações</Button>
         <Button color="inherit">Histórico</Button>
         <Spacer />
