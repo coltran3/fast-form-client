@@ -3,6 +3,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { AuthStoreProvider, useAuthContext } from "../stores/";
 import { LoggedRoutes, OpenRoutes } from "./Routes/";
 import { theme } from "./theme";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const GlobalStyle = createGlobalStyle`
   html, 
@@ -33,15 +34,19 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
+
 export function App() {
   return (
     <>
       <React.Suspense fallback={null}>
         <GlobalStyle />
         <AuthStoreProvider>
-          <ThemeProvider theme={theme}>
-            <AuthResolver />
-          </ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider theme={theme}>
+              <AuthResolver />
+            </ThemeProvider>
+          </QueryClientProvider>
         </AuthStoreProvider>
       </React.Suspense>
     </>
