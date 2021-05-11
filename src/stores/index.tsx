@@ -13,7 +13,7 @@ export function useAuthContext() {
 }
 
 export function AuthStoreProvider(props: PropsWithChildren<ReactNode>) {
-  const { user, setUser } = useAuth();
+  const authState = useAuth();
 
-  return <AuthContext.Provider value={{ user, setUser }}>{props.children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={authState}>{props.children}</AuthContext.Provider>;
 }
