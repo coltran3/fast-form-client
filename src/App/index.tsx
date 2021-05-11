@@ -1,7 +1,8 @@
 import React from "react";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { AuthStoreProvider, useAuthContext } from "../stores/";
 import { LoggedRoutes, OpenRoutes } from "./Routes/";
+import { theme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
   html, 
@@ -38,7 +39,9 @@ export function App() {
       <React.Suspense fallback={null}>
         <GlobalStyle />
         <AuthStoreProvider>
-          <AuthResolver />
+          <ThemeProvider theme={theme}>
+            <AuthResolver />
+          </ThemeProvider>
         </AuthStoreProvider>
       </React.Suspense>
     </>
