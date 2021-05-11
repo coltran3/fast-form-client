@@ -1,6 +1,16 @@
-import { TextField as MuiTextField, Box, Button as MuiButton, Link as MuiLink } from "@material-ui/core";
+import {
+  TextField as MuiTextField,
+  Box,
+  Button as MuiButton,
+  Link as MuiLink,
+  CircularProgress,
+  FormHelperText,
+} from "@material-ui/core";
+import { useForm, Controller } from "react-hook-form";
 import styled from "styled-components";
 import { useAuthContext } from "../../stores";
+import { LoginParams } from "../../stores/useAuth";
+import { useState } from "react";
 
 const StyledBox = styled(Box)`
   display: flex;
@@ -54,7 +64,22 @@ const Link = styled(MuiLink)`
 `;
 
 export function Login(): JSX.Element {
-  const { setUser } = useAuthContext();
+  const { login } = useAuthContext();
+  const { handleSubmit, control } = useForm<LoginParams>();
+  const [loading, setLoading] = useState<boolean>();
+  const [error, setError] = useState<string>();
+
+  async function handleLogin(params: LoginParams) {
+    try {
+      setError("");
+      setLoading(true);
+      await login(params);
+    } catch (error) {
+      setError("Houve um erro ao tentar fazer login");
+    }
+
+    setLoading(false);
+  }
 
   return (
     <StyledBox>
@@ -62,14 +87,57 @@ export function Login(): JSX.Element {
         <h3>Fast Form</h3>
         <span>Uma nova forma de avaliação</span>
       </TitleBox>
-      <FieldBoxes>
-        <TextField label="Matricula" variant="outlined" />
-        <TextField label="Senha" variant="outlined" type="password" />
-        <Button variant="contained" color="primary" size="large" onClick={() => setUser("oi")}>
-          Entrar
-        </Button>
-        <Link>Recuperar senha</Link>
-      </FieldBoxes>
+      <form onSubmit={handleSubmit(handleLogin)}>
+        <FieldBoxes>
+          <Controller
+            name="login"
+            control={control}
+            rules={{ required: "Informe a matrícula" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => {
+              return (
+                <TextField
+                  label="Matricula"
+                  variant="outlined"
+                  value={value}
+                  onChange={onChange}
+                  error={Boolean(error)}
+                  helperText={error?.message}
+                />
+              );
+            }}
+          />
+          <Controller
+            name="password"
+            control={control}
+            rules={{
+              required: "Informe a senha",
+              minLength: { value: 6, message: "Informe uma senha maior que 6 caracteres" },
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => {
+              return (
+                <TextField
+                  label="Senha"
+                  variant="outlined"
+                  type="password"
+                  value={value}
+                  onChange={onChange}
+                  error={Boolean(error)}
+                  helperText={error?.message}
+                />
+              );
+            }}
+          />
+          <Button variant="contained" color="primary" size="large" type="submit">
+            {loading ? <CircularProgress color="secondary" size={26} /> : "Entrar"}
+          </Button>
+          {error && (
+            <FormHelperText error variant="outlined">
+              {error}
+            </FormHelperText>
+          )}
+          <Link>Recuperar senha</Link>
+        </FieldBoxes>
+      </form>
     </StyledBox>
   );
 }
