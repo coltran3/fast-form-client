@@ -7,6 +7,7 @@ import styled from "styled-components";
 
 const Home = React.lazy(async () => import("../../pages/Home").then(m => ({ default: m.Home })));
 const Exams = React.lazy(async () => import("../../pages/Exams").then(m => ({ default: m.Exams })));
+const Users = React.lazy(async () => import("../../pages/Users").then(m => ({ default: m.Users })));
 
 const Container = styled(MuiContainer)`
   height: 100%;
@@ -24,6 +25,7 @@ export function LoggedRoutes() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/exams" component={Exams} />
+          <Route path="/users" component={Users} />
         </Switch>
       </Container>
     </Router>
