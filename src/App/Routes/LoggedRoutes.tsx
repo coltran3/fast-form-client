@@ -11,7 +11,7 @@ const Users = React.lazy(async () => import("../../pages/Users").then(m => ({ de
 
 const Container = styled(MuiContainer)`
   height: 100%;
-  padding-top: 64px !important;
+  padding-top: 96px;
   overflow: auto;
 `;
 
