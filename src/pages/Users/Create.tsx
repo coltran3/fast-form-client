@@ -42,7 +42,7 @@ const StyledButton = styled(Button)`
 `;
 
 export function Create() {
-  const { handleSubmit, control, reset } = useForm<UserParams>();
+  const { handleSubmit, control } = useForm<UserParams>();
   const { push } = useHistory();
 
   const { showNotification } = useNotificationContext();
