@@ -25,7 +25,7 @@ export default function GroupQuestion() {
       </div>
 
       {questions.map((e, index) => (
-        <div key={index} className="question">
+        <div key={`${e} ${index}`} className="question">
           <span>{e}</span>
           <button onClick={() => handleRemoveItem(index)}>remover</button>
         </div>
