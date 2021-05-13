@@ -1,31 +1,216 @@
-import { Grid, TextField, Typography, Select, MenuItem, InputLabel, FormControl } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Button,
+  CircularProgress,
+} from "@material-ui/core";
+import styled from "styled-components";
+import { useForm, Controller } from "react-hook-form";
+import { UserParams, UserType, UserRole } from "./types";
+import { useMutation } from "react-query";
+import { apiClient } from "../../api";
+import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "./constants";
+import { useNotificationContext } from "../../stores";
+
+const StyledTextField = styled(TextField)`
+  width: 100%;
+`;
+
+const StyledHeading = styled(Typography)`
+  color: ${props => props.theme.grey["4"]};
+`;
+
+const StyledFormControl = styled(FormControl)`
+  width: 100%;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+`;
+
+const StyledButton = styled(Button)`
+  margin-left: auto;
+`;
 
 export function Create() {
-  return (
-    <div>
-      <Typography variant="h3" gutterBottom>
-        Criar usuario WIP
-      </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <TextField variant="outlined" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField variant="outlined" style={{ width: "100%" }} />
-        </Grid>
+  const { handleSubmit, control } = useForm<UserParams>();
 
-        <Grid item xs={12}>
-          <FormControl variant="outlined">
-            <InputLabel id="role-input">Função</InputLabel>
-            <Select labelId="role-input" id="role-input" label="Função">
-              <MenuItem value={10}>TenTenTenTenTenTenTenTenTenTen</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
+  const { showNotification } = useNotificationContext();
+
+  const { mutate: createUser, isLoading } = useMutation(
+    (variables: Omit<UserParams, "confirmPassword">) => {
+      return apiClient.post("/user", variables);
+    },
+    {
+      onSuccess() {
+        showNotification({ message: "Usuário cadastrado com sucesso", type: "success" });
+      },
+      onError() {
+        showNotification({ message: "Ocorreu algum erro ao tentar cadastrar o usuário", type: "error" });
+      },
+    },
+  );
+
+  function submit({ confirmPassword, ...data }: UserParams) {
+    createUser(data);
+  }
+
+  return (
+    <>
+      <StyledHeading variant="h3" gutterBottom>
+        Criar usuario WIP
+      </StyledHeading>
+
+      <StyledForm onSubmit={handleSubmit(submit)}>
+        <Grid container spacing={3} direction="column" md={6}>
+          <Grid item xs={12}>
+            <Controller
+              name="enrollment"
+              control={control}
+              rules={{ required: "Informe a matrícula do usuário" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="Matricula"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="cpf"
+              control={control}
+              rules={{ required: "Informe o CPF do usuário" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="CPF"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="type"
+              control={control}
+              rules={{ required: "Informe o tipo do usuário" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledFormControl error={Boolean(error)} variant="outlined">
+                    <InputLabel id="role-input">Tipo</InputLabel>
+                    <Select labelId="role-input" id="role-input" label="Função" onChange={onChange} value={value}>
+                      <MenuItem value="">Selecione um valor</MenuItem>
+                      {Object.values(UserType).map(userType => (
+                        <MenuItem key={userType} value={userType}>
+                          {USER_TYPE_TRANSLATE_OBJ[userType]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </StyledFormControl>
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="role"
+              control={control}
+              rules={{ required: "Informe a função do usuário" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledFormControl error={Boolean(error)} variant="outlined">
+                    <InputLabel id="role-input">Função</InputLabel>
+                    <Select labelId="role-input" id="role-input" label="Função" onChange={onChange} value={value}>
+                      <MenuItem value="">Selecione um valor</MenuItem>
+                      {Object.values(UserRole).map(UserRole => (
+                        <MenuItem key={UserRole} value={UserRole}>
+                          {USER_ROLE_TRANSLATE_OBJ[UserRole]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </StyledFormControl>
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: "Informe a senha do usuário" }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="Senha"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              rules={{
+                required: "Confirme a senha",
+                validate: ({ password, confirmPassword }) => {
+                  if (password !== confirmPassword) {
+                    return "As senhas não são iguais";
+                  }
+                },
+              }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="Confirme a senha"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} container alignItems="flex-end">
+            <StyledButton variant="contained" color="primary" size="large" type="submit">
+              {isLoading ? <CircularProgress color="secondary" size={26} /> : "Criar"}
+            </StyledButton>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </StyledForm>
+    </>
   );
 }
 
