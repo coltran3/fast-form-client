@@ -4,7 +4,8 @@ import { apiClient } from "../api";
 export interface AuthState {
   user?: string;
   setUser: Dispatch<SetStateAction<string | undefined>>;
-  login: (loginParams: LoginParams) => Promise<void>;
+  login(loginParams: LoginParams): Promise<void>;
+  logout(): void;
 }
 
 export interface LoginParams {
@@ -13,17 +14,32 @@ export interface LoginParams {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<string>();
+  const [user, setUser] = useState<string | undefined>(() => {
+    const userString = localStorage.getItem("user");
+
+    if (userString) {
+      return userString;
+    }
+    localStorage.removeItem("user");
+
+    return undefined;
+  });
 
   async function login(loginParams: LoginParams) {
     try {
-      const token = (await apiClient.post("/auth", loginParams)) as string;
+      const token = (await (await apiClient.post("/auth", loginParams)).data) as string;
 
       setUser(token);
+      localStorage.setItem("user", token);
     } catch (error) {
       throw error.response.data;
     }
   }
 
-  return { user, setUser, login };
+  function logout() {
+    setUser(undefined);
+    localStorage.removeItem("user");
+  }
+
+  return { user, setUser, login, logout };
 }
