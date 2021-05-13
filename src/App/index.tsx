@@ -1,9 +1,13 @@
 import React from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { AuthStoreProvider, useAuthContext } from "../stores/";
+import { AuthStoreProvider, useAuthContext, NotificationProvider } from "../stores/";
 import { LoggedRoutes, OpenRoutes } from "./Routes/";
 import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Snackbar } from "@material-ui/core";
+
+import MuiAlert from "@material-ui/lab/Alert";
+import { useNotification } from "../stores/useNotification";
 
 const GlobalStyle = createGlobalStyle`
   html, 
@@ -37,16 +41,34 @@ const GlobalStyle = createGlobalStyle`
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
 
 export function App() {
+  const notificationState = useNotification();
+
   return (
     <>
       <React.Suspense fallback={null}>
         <GlobalStyle />
         <AuthStoreProvider>
-          <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={theme}>
-              <AuthResolver />
-            </ThemeProvider>
-          </QueryClientProvider>
+          <NotificationProvider value={notificationState}>
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider theme={theme}>
+                <AuthResolver />
+                <Snackbar
+                  open={Boolean(notificationState.message)}
+                  autoHideDuration={6000}
+                  onClose={notificationState.handleClose}
+                >
+                  <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={notificationState.handleClose}
+                    severity={notificationState.type}
+                  >
+                    {notificationState.message}
+                  </MuiAlert>
+                </Snackbar>
+              </ThemeProvider>
+            </QueryClientProvider>
+          </NotificationProvider>
         </AuthStoreProvider>
       </React.Suspense>
     </>
