@@ -17,7 +17,7 @@ export function useAuth() {
 
   async function login(loginParams: LoginParams) {
     try {
-      const token = (await apiClient.post("/auth", { data: loginParams })) as string;
+      const token = (await apiClient.post("/auth", loginParams)) as string;
 
       setUser(token);
     } catch (error) {
