@@ -7,7 +7,6 @@ export default function GroupQuestion() {
   const [newQuestion, setNewQuestion] = useState<String>("");
   const handleAddItem = () => {
     setQuestions([...questions, newQuestion]);
-    console.log("adicionado");
   };
   const handleRemoveItem = (id: Number) => {
     const result = questions.filter((e, index) => index !== id);
