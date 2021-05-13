@@ -16,6 +16,7 @@ import { useMutation } from "react-query";
 import { apiClient } from "../../api";
 import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "./constants";
 import { useNotificationContext } from "../../stores";
+import { useHistory } from "react-router-dom";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -41,7 +42,8 @@ const StyledButton = styled(Button)`
 `;
 
 export function Create() {
-  const { handleSubmit, control } = useForm<UserParams>();
+  const { handleSubmit, control, reset } = useForm<UserParams>();
+  const { push } = useHistory();
 
   const { showNotification } = useNotificationContext();
 
@@ -52,6 +54,7 @@ export function Create() {
     {
       onSuccess() {
         showNotification({ message: "Usuário cadastrado com sucesso", type: "success" });
+        push("./");
       },
       onError() {
         showNotification({ message: "Ocorreu algum erro ao tentar cadastrar o usuário", type: "error" });
