@@ -16,7 +16,7 @@ import { apiClient } from "../../../api";
 import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "../constants";
 import { useNotificationContext } from "../../../stores";
 import { useHistory } from "react-router-dom";
-import { PagesTitle } from "../../../components/Typography";
+import { PagesTitle } from "../../../components/PagesTitle";
 
 const StyledTextField = styled(TextField)`
   width: 100%;

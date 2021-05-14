@@ -12,7 +12,7 @@ import { useQuery } from "react-query";
 import { User } from "./types";
 import ErrorIcon from "@material-ui/icons/Error";
 import { useAuthContext } from "../../stores";
-import { PagesTitle } from "../../components/Typography";
+import { PagesTitle } from "../../components/PagesTitle";
 
 const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
 
