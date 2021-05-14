@@ -23,7 +23,7 @@ export function LoggedRoutes() {
       <Container>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/exams" component={Exams} />
+          <Route path="/exams" component={Exams} />
           <Route path="/users" component={Users} />
         </Switch>
       </Container>
