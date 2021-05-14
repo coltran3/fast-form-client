@@ -7,7 +7,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Header } from "./styles";
 import { ContentCard } from "./styles";
 
-const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
+const Create = lazy(async () => import("./Create/index").then(m => ({ default: m.Create })));
 
 const mockCard = [
   <Card title=" Lorem ipsum" status="aberto" />,
@@ -35,7 +35,6 @@ function Main() {
   return (
     <Grid container direction="column" alignItems="stretch" spacing={3}>
       <Grid item>
-        <Create />
         <Header>
           <TextField
             label="Buscar avaliação"
@@ -93,7 +92,7 @@ export function Exams() {
   return (
     <Switch>
       <Route exact path={`${path}`} component={Main} />
-      <Route exact path={`${path}/create`} component={Create} />
+      <Route path={`${path}/create`} component={Create} />
     </Switch>
   );
 }
