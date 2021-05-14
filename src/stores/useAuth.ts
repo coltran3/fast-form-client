@@ -20,6 +20,7 @@ export function useAuth() {
     if (userString) {
       return userString;
     }
+
     localStorage.removeItem("user");
 
     return undefined;
@@ -27,7 +28,7 @@ export function useAuth() {
 
   async function login(loginParams: LoginParams) {
     try {
-      const token = (await (await apiClient.post("/auth", loginParams)).data) as string;
+      const token = (await apiClient.post("/auth", loginParams)).data.data as string;
 
       setUser(token);
       localStorage.setItem("user", token);

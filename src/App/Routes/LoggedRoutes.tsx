@@ -15,11 +15,11 @@ const Container = styled(MuiContainer)`
 `;
 
 export function LoggedRoutes() {
-  const { setUser } = useAuthContext();
+  const { logout } = useAuthContext();
 
   return (
     <Router>
-      <TopBar logout={() => setUser("")} />
+      <TopBar logout={logout} />
       <Container>
         <Switch>
           <Route exact path="/" component={Home} />

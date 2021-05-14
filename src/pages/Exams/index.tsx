@@ -1,11 +1,13 @@
+import { lazy } from "react";
+import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
 import { TextField, Button, InputAdornment, Grid } from "@material-ui/core";
 import Card from "../../components/Card";
 import { GroupDisplaying } from "../../components/GroupDisplaying";
 import SearchIcon from "@material-ui/icons/Search";
-
 import { Header } from "./styles";
-
 import { ContentCard } from "./styles";
+
+const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
 
 const mockCard = [
   <Card title=" Lorem ipsum" status="aberto" />,
@@ -22,10 +24,18 @@ const mockCard = [
   <Card title=" Lorem ipsum" status="aberto" />,
 ];
 
-export function Exams() {
+function Main() {
+  const { push } = useHistory();
+  const { url } = useRouteMatch();
+
+  function handleCreateClick() {
+    push(`${url}/create`);
+  }
+
   return (
     <Grid container direction="column" alignItems="stretch" spacing={3}>
       <Grid item>
+        <Create />
         <Header>
           <TextField
             label="Buscar avaliação"
@@ -38,7 +48,7 @@ export function Exams() {
             }}
             variant="outlined"
           />
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleCreateClick}>
             Cadastrar avaliações
           </Button>
         </Header>
@@ -74,5 +84,16 @@ export function Exams() {
         </GroupDisplaying>
       </Grid>
     </Grid>
+  );
+}
+
+export function Exams() {
+  const { path } = useRouteMatch();
+
+  return (
+    <Switch>
+      <Route exact path={`${path}`} component={Main} />
+      <Route exact path={`${path}/create`} component={Create} />
+    </Switch>
   );
 }

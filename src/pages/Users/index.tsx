@@ -11,6 +11,8 @@ import { apiClient } from "../../api";
 import { useQuery } from "react-query";
 import { User } from "./types";
 import ErrorIcon from "@material-ui/icons/Error";
+import { useAuthContext } from "../../stores";
+import { PagesTitle } from "../../components/Typography";
 
 const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
 
@@ -43,8 +45,9 @@ const StyledErrorIcon = styled(ErrorIcon)`
 function Main() {
   const { push } = useHistory();
   const { url } = useRouteMatch();
-  const { data: user, isLoading, isError } = useQuery<User>("users", () => {
-    return (apiClient.get("/user") as unknown) as User;
+  const { user: token } = useAuthContext();
+  const { data, isLoading, isError } = useQuery<any>("users", () => {
+    return (apiClient.get("/user", { headers: { Authorization: `Bearer ${token}` } }) as unknown) as User;
   });
 
   function handleCreateClick() {
@@ -67,15 +70,16 @@ function Main() {
             Houve algum erro
           </Typography>
         </FormHelperText>
-      ) : (
-        <div>blablabla deu bom {user}</div>
-      )}
+      ) : data && data.data && data.data.data ? (
+        <PagesTitle>{data.data.data.cpf}</PagesTitle>
+      ) : null}
     </MainWrapper>
   );
 }
 
 export function Users() {
   const { path } = useRouteMatch();
+
   return (
     <Switch>
       <Route exact path={`${path}`} component={Main} />
