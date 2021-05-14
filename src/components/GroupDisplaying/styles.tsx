@@ -7,10 +7,10 @@ export const Header = styled.header`
 `;
 
 export const StyledTypography = styled(Typography)`
-  color: ${props => props.theme.grey["4"]};
+  color: ${props => props.theme.grey["3"]};
   margin: 0;
 `;
 
 export const StyledIconButton = styled(IconButton)`
-  color: ${props => props.theme.grey["4"]};
+  color: ${props => props.theme.grey["3"]};
 `;

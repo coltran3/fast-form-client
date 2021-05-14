@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { IconButton } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import { Header, StyledTypography, StyledIconButton } from "./styles";

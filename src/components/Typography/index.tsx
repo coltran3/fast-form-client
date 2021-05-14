@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const StyledTypography = styled(Typography)`
-  color: ${props => props.theme.grey["4"]};
+  color: ${props => props.theme.grey["3"]};
 `;
 
 export function PagesTitle(props: Props) {

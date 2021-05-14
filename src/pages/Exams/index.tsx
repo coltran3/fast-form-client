@@ -39,7 +39,7 @@ export function Exams() {
             variant="outlined"
           />
           <Button variant="contained" color="primary">
-            Cadastrar usuarios
+            Cadastrar avaliações
           </Button>
         </Header>
       </Grid>
