@@ -10,13 +10,13 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
-import { UserParams, UserType, UserRole } from "./types";
+import { UserParams, UserType, UserRole } from "../types";
 import { useMutation } from "react-query";
-import { apiClient } from "../../api";
-import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "./constants";
-import { useNotificationContext } from "../../stores";
+import { apiClient } from "../../../api";
+import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "../constants";
+import { useNotificationContext } from "../../../stores";
 import { useHistory } from "react-router-dom";
-import { PagesTitle } from "../../components/Typography";
+import { PagesTitle } from "../../../components/Typography";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -64,7 +64,7 @@ export function Create() {
 
   return (
     <>
-      <PagesTitle>Criar usuario WIP</PagesTitle>
+      <PagesTitle>Criar usuario</PagesTitle>
 
       <StyledForm onSubmit={handleSubmit(submit)}>
         <Grid container spacing={3} direction="column" md={6}>
