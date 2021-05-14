@@ -1,7 +1,7 @@
 import { Modal } from "@material-ui/core";
 import React from "react";
-import GroupQuestion from "../../components/group-question";
-import { StartedExam } from "../../components/startedExam";
+import GroupQuestion from "../../components/GroupQuestion";
+import { StartedExam } from "../../components/StartedExam";
 import { Container } from "./styles";
 
 export function Home() {

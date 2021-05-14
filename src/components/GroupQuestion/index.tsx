@@ -8,11 +8,13 @@ export default function GroupQuestion() {
   const handleAddItem = () => {
     setQuestions([...questions, newQuestion]);
   };
+
   const handleRemoveItem = (id: Number) => {
     const result = questions.filter((e, index) => index !== id);
     setQuestions(result);
     console.log("removido");
   };
+
   return (
     <Container>
       <label>Título do grupo</label>

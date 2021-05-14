@@ -1,7 +1,6 @@
 import {
   Grid,
   TextField,
-  Typography,
   Select,
   MenuItem,
   InputLabel,
@@ -17,13 +16,10 @@ import { apiClient } from "../../api";
 import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "./constants";
 import { useNotificationContext } from "../../stores";
 import { useHistory } from "react-router-dom";
+import { PagesTitle } from "../../components/Heading";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
-`;
-
-const StyledHeading = styled(Typography)`
-  color: ${props => props.theme.grey["4"]};
 `;
 
 const StyledFormControl = styled(FormControl)`
@@ -68,9 +64,7 @@ export function Create() {
 
   return (
     <>
-      <StyledHeading variant="h3" gutterBottom>
-        Criar usuario WIP
-      </StyledHeading>
+      <PagesTitle>Criar usuario WIP</PagesTitle>
 
       <StyledForm onSubmit={handleSubmit(submit)}>
         <Grid container spacing={3} direction="column" md={6}>
