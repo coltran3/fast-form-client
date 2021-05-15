@@ -6,10 +6,11 @@ import { Header, StyledTypography, StyledIconButton } from "./styles";
 interface Props {
   title: string;
   children: JSX.Element;
+  defaultDisplay?: boolean;
 }
 
-export function GroupDisplaying({ title, children }: Props) {
-  const [display, setDisplay] = useState(false);
+export function GroupDisplaying({ title, children, defaultDisplay }: Props) {
+  const [display, setDisplay] = useState(defaultDisplay);
 
   const toogleDisplay = () => {
     setDisplay(!display);
