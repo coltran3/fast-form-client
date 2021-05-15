@@ -6,27 +6,23 @@ import { GroupDisplaying } from "../../components/GroupDisplaying";
 import SearchIcon from "@material-ui/icons/Search";
 import { Header } from "./styles";
 import { ContentCard } from "./styles";
+import { useQuery } from "react-query";
+import { Exam } from "./types";
+import { apiClient } from "../../api";
+import { useAuthContext } from "../../stores";
+import { ErrorView } from "../../components/ErrorView";
+import { ApiEntityWrapper } from "../../api/types";
+import { PageLoad } from "../../components/PageLoad";
 
 const Create = lazy(async () => import("./Create/index").then(m => ({ default: m.Create })));
 
-const mockCard = [
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-  <Card title=" Lorem ipsum" status="aberto" />,
-];
-
 function Main() {
   const { push } = useHistory();
+  const { user } = useAuthContext();
   const { url } = useRouteMatch();
+  const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
+    return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
+  });
 
   function handleCreateClick() {
     push(`${url}/create`);
@@ -53,35 +49,23 @@ function Main() {
         </Header>
       </Grid>
 
-      <Grid item>
-        <GroupDisplaying title="Avalições recentes">
-          <ContentCard>{mockCard}</ContentCard>
-        </GroupDisplaying>
-      </Grid>
-
-      <Grid item>
-        <GroupDisplaying title="Novo">
-          <ContentCard>{mockCard}</ContentCard>
-        </GroupDisplaying>
-      </Grid>
-
-      <Grid item>
-        <GroupDisplaying title="Aberto">
-          <ContentCard>{mockCard}</ContentCard>
-        </GroupDisplaying>
-      </Grid>
-
-      <Grid item>
-        <GroupDisplaying title="Não disponível">
-          <ContentCard>{mockCard}</ContentCard>
-        </GroupDisplaying>
-      </Grid>
-
-      <Grid item>
-        <GroupDisplaying title="Concluído">
-          <ContentCard>{mockCard}</ContentCard>
-        </GroupDisplaying>
-      </Grid>
+      {isLoading ? (
+        <PageLoad />
+      ) : isError ? (
+        <ErrorView>Houve algum erro na busca de usuários</ErrorView>
+      ) : exams && exams.data && exams.data.data ? (
+        <>
+          <Grid item>
+            <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
+              <ContentCard>
+                {exams.data.data.map(({ title, startedAt }) => {
+                  return <Card title={title} date={startedAt} />;
+                })}
+              </ContentCard>
+            </GroupDisplaying>
+          </Grid>
+        </>
+      ) : null}
     </Grid>
   );
 }
@@ -96,3 +80,38 @@ export function Exams() {
     </Switch>
   );
 }
+
+/*
+
+  <Grid item>
+            <GroupDisplaying title="Avalições recentes">
+              <ContentCard>{mockCard}</ContentCard>
+            </GroupDisplaying>
+          </Grid>
+
+          <Grid item>
+            <GroupDisplaying title="Novo">
+              <ContentCard>{mockCard}</ContentCard>
+            </GroupDisplaying>
+          </Grid>
+
+          <Grid item>
+            <GroupDisplaying title="Aberto">
+              <ContentCard>{mockCard}</ContentCard>
+            </GroupDisplaying>
+          </Grid>
+
+          <Grid item>
+            <GroupDisplaying title="Não disponível">
+              <ContentCard>{mockCard}</ContentCard>
+            </GroupDisplaying>
+          </Grid>
+
+          <Grid item>
+            <GroupDisplaying title="Concluído">
+              <ContentCard>{mockCard}</ContentCard>
+            </GroupDisplaying>
+          </Grid>
+
+
+*/
