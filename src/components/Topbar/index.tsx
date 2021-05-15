@@ -10,7 +10,6 @@ const Spacer = styled.div`
 
 interface Props {
   logout: () => void;
- 
 }
 
 export function TopBar({ logout }: Props): JSX.Element {
@@ -23,7 +22,9 @@ export function TopBar({ logout }: Props): JSX.Element {
           <RateReviewIcon />
         </IconButton>
         <Button color="inherit">Criar avaliação</Button>
-        <Button color="inherit" onClick={()=>history.push("/exams") }>Minhas avaliações</Button>
+        <Button color="inherit" onClick={() => history.push("/exams")}>
+          Minhas avaliações
+        </Button>
         <Button color="inherit">Buscar avaliações</Button>
         <Button color="inherit">Histórico</Button>
         <Spacer />
