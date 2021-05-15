@@ -1,23 +1,25 @@
-import { Container, Content, TitleAndDate } from "./styles";
-import NewReleasesIcon from "@material-ui/icons/NewReleases";
+import { Container, Content, TitleAndDate, NewReleasesIcon } from "./styles";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "@material-ui/core/IconButton";
 import { CardActions } from "@material-ui/core";
+import dayjs from "dayjs";
 
 interface Icard {
   title: string;
-  datetime?: Date;
-  status: "aberto" | "fechado" | "recente" | "novo";
+  date?: string;
+  // status: "aberto" | "fechado" | "recente" | "novo";
 }
 
-export default function Card({ title, datetime }: Icard) {
+export default function Card({ title, date }: Icard) {
+  const formatedDate = Boolean(date) ? dayjs(date).format("DD/MM/YYYY") : undefined;
+
   return (
     <Container>
+      <NewReleasesIcon />
       <Content>
-        <NewReleasesIcon />
         <TitleAndDate>
           <strong>{title}</strong>
-          <span>{datetime?.getDate ?? "datetim"}</span>
+          {formatedDate && <span>{formatedDate}</span>}
         </TitleAndDate>
       </Content>
       <CardActions>
