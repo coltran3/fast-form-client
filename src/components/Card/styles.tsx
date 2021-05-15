@@ -21,12 +21,12 @@ export const TitleAndDate = styled.div`
   cursor: pointer;
 
   strong {
-    font-size: 16px;
+    font-size: 1.5rem;
     margin-bottom: 4px;
   }
 
   span {
-    font-size: 10px;
+    font-size: 0.7rem;
   }
 `;
 

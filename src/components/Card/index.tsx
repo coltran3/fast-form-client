@@ -15,8 +15,8 @@ export default function Card({ title, date }: Icard) {
 
   return (
     <Container>
-      <NewReleasesIcon />
       <Content>
+        <NewReleasesIcon />
         <TitleAndDate>
           <strong>{title}</strong>
           {formatedDate && <span>{formatedDate}</span>}
