@@ -10,11 +10,10 @@ const Spacer = styled.div`
 
 interface Props {
   logout: () => void;
- 
 }
 
 export function TopBar({ logout }: Props): JSX.Element {
-  const history = useHistory();
+  const { push } = useHistory();
 
   return (
     <AppBar>
@@ -22,10 +21,12 @@ export function TopBar({ logout }: Props): JSX.Element {
         <IconButton edge="start" color="inherit" aria-label="menu">
           <RateReviewIcon />
         </IconButton>
-        <Button color="inherit">Criar avaliação</Button>
-        <Button color="inherit" onClick={()=>history.push("/exams") }>Minhas avaliações</Button>
-        <Button color="inherit">Buscar avaliações</Button>
-        <Button color="inherit">Histórico</Button>
+        <Button color="inherit" onClick={() => push("/exams")}>
+          Avaliações
+        </Button>
+        <Button color="inherit" onClick={() => push("/users")}>
+          Usuários
+        </Button>
         <Spacer />
         <IconButton edge="end" color="inherit" onClick={logout}>
           <ExitToAppIcon />
