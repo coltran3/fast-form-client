@@ -40,7 +40,6 @@ const StyledButton = styled(Button)`
 export function Create() {
   const { handleSubmit, control } = useForm<UserParams>();
   const { push } = useHistory();
-
   const { showNotification } = useNotificationContext();
 
   const { mutate: createUser, isLoading } = useMutation(
@@ -164,6 +163,7 @@ export function Create() {
                   <StyledTextField
                     label="Senha"
                     variant="outlined"
+                    type="password"
                     value={value}
                     onChange={onChange}
                     error={Boolean(error)}
@@ -190,6 +190,7 @@ export function Create() {
                   <StyledTextField
                     label="Confirme a senha"
                     variant="outlined"
+                    type="password"
                     value={value}
                     onChange={onChange}
                     error={Boolean(error)}
@@ -210,5 +211,3 @@ export function Create() {
     </>
   );
 }
-
-export {};
