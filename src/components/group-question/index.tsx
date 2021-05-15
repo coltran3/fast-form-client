@@ -1,9 +1,10 @@
-import { Button, Card, CardActions, TextField } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { apiClient } from "../../api";
-
-import { useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import React, { useState } from "react";
 import { Container } from "./styles";
+import QuestionCard from "../question-card";
 
 interface IGroupQuestion {
   title: String;
@@ -33,6 +34,15 @@ export default function GroupQuestion() {
       throw error.response.data;
     }
   }
+
+  function handleOnDragEnd(result: any) {
+    if (!result.destination) return;
+
+    const items = Array.from(questions);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setQuestions(items);
+  }
   return (
     <Container>
       <Typography variant="h5" component="h2" style={{ marginBottom: 12 }}>
@@ -57,22 +67,29 @@ export default function GroupQuestion() {
       <Button variant="contained" color="secondary" size="small" onClick={handleAddItem} style={{ marginBottom: 20 }}>
         Adicionar questão
       </Button>
-
-      {questions.map((e, index) => (
-        <Card key={`${e} ${index}`} className="card">
-          <Typography variant="h6" component="h2" color="primary">
-            {index} - {e.title}
-          </Typography>
-          <CardActions>
-            <Button variant="contained" size="small" onClick={() => handleRemoveItem(index)}>
-              Adicionar Imagem
-            </Button>
-            <Button variant="contained" size="small" onClick={() => handleRemoveItem(index)}>
-              remover
-            </Button>
-          </CardActions>
-        </Card>
-      ))}
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="droppable">
+          {providedDroppable => (
+            <div {...providedDroppable.droppableProps} ref={providedDroppable.innerRef}>
+              {questions.map((e, index) => (
+                <Draggable key={index} draggableId={index.toString()} index={index}>
+                  {providedDraggable => (
+                    <QuestionCard
+                      id={index}
+                      title={e.title}
+                      provided={providedDraggable}
+                      dragHandleProps={providedDraggable.dragHandleProps}
+                      draggableProps={providedDraggable.draggableProps}
+                      onClickAddImage={() => {}}
+                      onClickRemove={() => handleRemoveItem(index)}
+                    />
+                  )}
+                </Draggable>
+              ))}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
       <Button id="send-button" variant="contained" color="primary" size="large" onClick={cretaeGroupQuestion}>
         Enviar
       </Button>
