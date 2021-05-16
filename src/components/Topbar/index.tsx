@@ -2,11 +2,7 @@ import { useHistory } from "react-router-dom";
 import { AppBar, Toolbar, IconButton, Button } from "@material-ui/core";
 import RateReviewIcon from "@material-ui/icons/RateReview";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import styled from "styled-components";
-
-const Spacer = styled.div`
-  flex-grow: 1;
-`;
+import { FlexSpacer } from "../../components/FlexSpacer";
 
 interface Props {
   logout: () => void;
@@ -27,7 +23,7 @@ export function TopBar({ logout }: Props): JSX.Element {
         <Button color="inherit" onClick={() => push("/users")}>
           Usuário
         </Button>
-        <Spacer />
+        <FlexSpacer />
         <IconButton edge="end" color="inherit" onClick={logout}>
           <ExitToAppIcon />
         </IconButton>
