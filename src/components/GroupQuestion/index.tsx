@@ -1,10 +1,9 @@
-import { Button, TextField } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+import { Button, TextField, Typography } from "@material-ui/core";
 import { apiClient } from "../../api";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container } from "./styles";
-import QuestionCard from "../question-card";
+import { QuestionCard } from "../question-card";
 
 interface IGroupQuestion {
   title: String;
@@ -14,19 +13,20 @@ interface IGroupQuestion {
 export default function GroupQuestion() {
   const [questions, setQuestions] = useState<IGroupQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState<String>("");
-  const handleAddItem = () => {
+
+  function handleAddItem() {
     const item: IGroupQuestion = {
       title: newQuestion,
       imageUrl: "",
     };
     setQuestions([...questions, item]);
-  };
+  }
 
-  const handleRemoveItem = (id: Number) => {
+  function handleRemoveItem(id: Number) {
     const result = questions.filter((e, index) => index !== id);
     setQuestions(result);
     console.log("removido");
-  };
+  }
 
   async function cretaeGroupQuestion() {
     try {

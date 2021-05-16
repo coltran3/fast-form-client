@@ -16,7 +16,7 @@ interface Props {
   dragHandleProps: DraggableProvidedDragHandleProps | undefined;
 }
 
-export default function QuestionCard({
+export function QuestionCard({
   id,
   title,
   provided,
