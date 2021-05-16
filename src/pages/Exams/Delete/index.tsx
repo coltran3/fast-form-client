@@ -4,7 +4,7 @@ import { apiClient } from "../../../api";
 import { ApiEntityWrapper } from "../../../api/types";
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { useAuthContext, useNotificationContext } from "../../../stores";
-import { Exam } from "../types";
+import { Exam, ExamRouteParams } from "../types";
 import { PageLoad } from "../../../components/PageLoad";
 import styled from "styled-components";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -17,7 +17,7 @@ export function Delete() {
   const { user } = useAuthContext();
   const { push } = useHistory();
   const { showNotification } = useNotificationContext();
-  const { examId } = useParams<{ examId: string }>();
+  const { examId } = useParams<ExamRouteParams>();
   const { data: exam, isLoading } = useQuery<ApiEntityWrapper<Exam>>(
     ["exam", examId],
     () => {

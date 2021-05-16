@@ -5,7 +5,8 @@ export interface Exam {
   title: string;
   description: string;
   startedAt: string;
-  endedAt: string;
+  endedAt?: string;
+  allowAnonymous: boolean;
 }
 
 export interface ExamsState {
@@ -26,4 +27,8 @@ export interface Question {
   imageUrl: string;
   imageAlt: string;
   groupId: 0;
+}
+
+export interface ExamRouteParams {
+  examId?: string;
 }

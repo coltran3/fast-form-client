@@ -83,7 +83,6 @@ function Main() {
           </>
         ) : null}
       </Grid>
-      <Route path={`${path}/delete/:examId`} component={Delete} />
     </>
   );
 }
@@ -95,7 +94,10 @@ export function Exams() {
   return (
     <Switch>
       <ExamsContext.Provider value={{ exam, setExam }}>
-        <Route path={`${path}`} component={Main} />
+        <Route exact path={[`${path}`, `${path}/delete/:examId`]}>
+          <Main />
+          <Route path={`${path}/delete/:examId`} component={Delete} />
+        </Route>
         <Route path={[`${path}/create`, `${path}/edit/:examId`]} component={Create} />
         <Route path={`${path}/:examId/group`} component={GroupQuestion} />
         <Redirect to="/exams" />
