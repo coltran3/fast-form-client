@@ -25,7 +25,7 @@ export function TopBar({ logout }: Props): JSX.Element {
           Avaliações
         </Button>
         <Button color="inherit" onClick={() => push("/users")}>
-          Usuários
+          Usuário
         </Button>
         <Spacer />
         <IconButton edge="end" color="inherit" onClick={logout}>
