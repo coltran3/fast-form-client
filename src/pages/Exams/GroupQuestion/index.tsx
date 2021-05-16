@@ -1,99 +1,246 @@
-import { Button, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  Grid,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  CircularProgress,
+} from "@material-ui/core";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import { QuestionCard } from "../../../components/QuestionCard";
+import styled from "styled-components";
+import { PagesTitle } from "../../../components/PagesTitle";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Question, QuestionGroup } from "../types";
+import { useMutation } from "react-query";
 import { apiClient } from "../../../api";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useState } from "react";
-import { Container } from "./styles";
-import { QuestionCard } from "../../../components/question-card";
+import { useExamsContext } from "../context";
+import { useAuthContext, useNotificationContext } from "../../../stores";
+import { useHistory } from "react-router";
+import { ApiEntityWrapper } from "../../../api/types";
 
-interface IGroupQuestion {
-  title: String;
-  imageUrl: String;
+const StyledTextField = styled(TextField)`
+  width: 100%;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+`;
+
+interface CreateQuestionParams {
+  groupId: number;
+  questions: Question[];
 }
 
-export default function GroupQuestion() {
-  const [questions, setQuestions] = useState<IGroupQuestion[]>([]);
-  const [newQuestion, setNewQuestion] = useState<String>("");
+export function GroupQuestion() {
+  const { exam } = useExamsContext();
+  const { user } = useAuthContext();
+  const { push } = useHistory();
+  const { showNotification } = useNotificationContext();
+  const { handleSubmit, control } = useForm<QuestionGroup>({
+    defaultValues: { title: "", type: "noType", questions: [] },
+  });
+  const { fields, append, remove, swap } = useFieldArray({
+    control,
+    name: "questions",
+  });
+  const { handleSubmit: handleQuestionSubmit, control: questionControl } = useForm({
+    defaultValues: { statement: "", required: false },
+  });
+  const { mutate: createQuestions, isLoading: isLoadingCreateQuestions } = useMutation(
+    ({ groupId, questions }: CreateQuestionParams) => {
+      console.log("groupId on mutate func", groupId);
+      console.log("questions on mutate func", questions);
 
-  function handleAddItem() {
-    const item: IGroupQuestion = {
-      title: newQuestion,
-      imageUrl: "",
-    };
-    setQuestions([...questions, item]);
+      return apiClient.post(
+        `/question${groupId ? `/${groupId}` : ""}`,
+        { questions },
+        { headers: { Authorization: `Bearer ${user}` } },
+      );
+    },
+    {
+      onSuccess: () => {
+        push("/exams");
+        showNotification({ message: "Grupo de questões criado com sucesso", type: "success" });
+      },
+      onError: () => {
+        showNotification({
+          message: "Ocorreu algum erro ao tentat adicionar as questões ao grupo de questões",
+          type: "error",
+        });
+      },
+    },
+  );
+  const { mutate: createQuestionGroup, isLoading: isLoadingCreateQuestionGroup } = useMutation<
+    ApiEntityWrapper<QuestionGroup>,
+    Error,
+    Omit<QuestionGroup, "id">
+  >(
+    ({ title, type }) => {
+      return apiClient.post(
+        "/question-group",
+        {
+          title,
+          class: type === "class",
+          personal: type === "personal",
+          examId: exam?.id,
+        },
+        { headers: { Authorization: `Bearer ${user}` } },
+      );
+    },
+    {
+      onSuccess: (newQuestionGroup, { questions }) => {
+        console.log("newQuestionGroup in onSucces", newQuestionGroup);
+        createQuestions({ questions, groupId: newQuestionGroup.data.data.id });
+      },
+      onError: () => {
+        showNotification({ message: "Ocorreu algum erro ao tentar criar o grupo de questões", type: "error" });
+      },
+    },
+  );
+
+  function questionSubmit(values: Pick<Question, "statement" | "required">) {
+    append(values);
   }
 
-  function handleRemoveItem(id: Number) {
-    const result = questions.filter((e, index) => index !== id);
-    setQuestions(result);
-    console.log("removido");
+  function handleRemoveItem(idx: number) {
+    remove(idx);
   }
 
-  async function cretaeGroupQuestion() {
-    try {
-      const result = await apiClient.post("/question-group");
-    } catch (error) {
-      throw error.response.data;
-    }
-  }
-
-  function handleOnDragEnd(result: any) {
+  function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
 
-    const items = Array.from(questions);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setQuestions(items);
+    swap(result.source.index, result.destination.index);
   }
-  return (
-    <Container>
-      <Typography variant="h5" component="h2" style={{ marginBottom: 12 }}>
-        Titulo do grupo
-      </Typography>
-      <TextField
-        variant="outlined"
-        placeholder="Título do grupo"
-        style={{ background: "#fff", marginBottom: 20 }}
-        onChange={event => setNewQuestion(event.target.value)}
-      />
 
-      <Typography variant="h5" component="h2" style={{ marginBottom: 12 }}>
-        Nome da questão
-      </Typography>
-      <TextField
-        variant="outlined"
-        placeholder="Questão"
-        style={{ background: "#fff" }}
-        onChange={event => setNewQuestion(event.target.value)}
-      />
-      <Button variant="contained" color="secondary" size="small" onClick={handleAddItem} style={{ marginBottom: 20 }}>
-        Adicionar questão
-      </Button>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="droppable">
-          {providedDroppable => (
-            <div {...providedDroppable.droppableProps} ref={providedDroppable.innerRef}>
-              {questions.map((e, index) => (
-                <Draggable key={index} draggableId={index.toString()} index={index}>
-                  {providedDraggable => (
-                    <QuestionCard
-                      id={index}
-                      title={e.title}
-                      provided={providedDraggable}
-                      dragHandleProps={providedDraggable.dragHandleProps}
-                      draggableProps={providedDraggable.draggableProps}
-                      onClickAddImage={() => {}}
-                      onClickRemove={() => handleRemoveItem(index)}
-                    />
-                  )}
-                </Draggable>
-              ))}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <Button id="send-button" variant="contained" color="primary" size="large" onClick={cretaeGroupQuestion}>
-        Enviar
-      </Button>
-    </Container>
+  function submit(values: QuestionGroup) {
+    createQuestionGroup(values);
+  }
+
+  return (
+    <>
+      <PagesTitle>Grupo de questões</PagesTitle>
+      <form onSubmit={handleSubmit(submit)}>
+        <Grid container spacing={3} direction="column">
+          <Grid item xs={12}>
+            <Controller
+              name="title"
+              control={control}
+              rules={{
+                required: "Informe o título do grupo",
+              }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="Título do grupo"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="type"
+              control={control}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Tipo do group de questões</FormLabel>
+                    <RadioGroup aria-label="type" name="type" value={value} onChange={onChange}>
+                      <FormControlLabel value="class" control={<Radio color="primary" />} label="Matéria" />
+                      <FormControlLabel value="personal" control={<Radio color="primary" />} label="Pessoal" />
+                      <FormControlLabel value="noType" control={<Radio color="primary" />} label="Sem valor" />
+                    </RadioGroup>
+                  </FormControl>
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="statement"
+              control={questionControl}
+              rules={{
+                required: "Informe o nome da questão",
+              }}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    variant="outlined"
+                    placeholder=" Nome da questão"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <StyledButton
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={handleQuestionSubmit(questionSubmit)}
+            >
+              Adicionar questão
+            </StyledButton>
+          </Grid>
+          <Grid item xs={12}>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              <Droppable droppableId="droppable">
+                {providedDroppable => (
+                  <Grid
+                    item
+                    container
+                    spacing={3}
+                    direction="column"
+                    {...providedDroppable.droppableProps}
+                    ref={providedDroppable.innerRef}
+                  >
+                    {fields.map(({ statement, id }, idx) => (
+                      <Draggable key={id} draggableId={id} index={idx}>
+                        {providedDraggable => (
+                          <Grid item>
+                            <QuestionCard
+                              idx={idx}
+                              title={statement}
+                              provided={providedDraggable}
+                              dragHandleProps={providedDraggable.dragHandleProps}
+                              draggableProps={providedDraggable.draggableProps}
+                              onClickAddImage={() => {}}
+                              onClickRemove={() => handleRemoveItem(idx)}
+                            />
+                          </Grid>
+                        )}
+                      </Draggable>
+                    ))}
+                  </Grid>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Grid>
+
+          <Grid item container justify="flex-end" xs={12}>
+            <Button type="submit" variant="contained" color="primary" size="large">
+              {isLoadingCreateQuestions || isLoadingCreateQuestionGroup ? (
+                <CircularProgress color="secondary" size={26} />
+              ) : (
+                "Criar"
+              )}
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </>
   );
 }
