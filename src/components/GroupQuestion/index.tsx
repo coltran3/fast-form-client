@@ -1,12 +1,25 @@
-import { Button } from "@material-ui/core";
-import { useState } from "react";
+import { Button, TextField } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import { apiClient } from "../../api";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import React, { useState } from "react";
 import { Container } from "./styles";
+import QuestionCard from "../question-card";
+
+interface IGroupQuestion {
+  title: String;
+  imageUrl: String;
+}
 
 export default function GroupQuestion() {
-  const [questions, setQuestions] = useState<String[]>([]);
+  const [questions, setQuestions] = useState<IGroupQuestion[]>([]);
   const [newQuestion, setNewQuestion] = useState<String>("");
   const handleAddItem = () => {
-    setQuestions([...questions, newQuestion]);
+    const item: IGroupQuestion = {
+      title: newQuestion,
+      imageUrl: "",
+    };
+    setQuestions([...questions, item]);
   };
 
   const handleRemoveItem = (id: Number) => {
@@ -15,24 +28,72 @@ export default function GroupQuestion() {
     console.log("removido");
   };
 
+  async function cretaeGroupQuestion() {
+    try {
+      const result = await apiClient.post("/question-group");
+    } catch (error) {
+      throw error.response.data;
+    }
+  }
+
+  function handleOnDragEnd(result: any) {
+    if (!result.destination) return;
+
+    const items = Array.from(questions);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setQuestions(items);
+  }
   return (
     <Container>
-      <label>Título do grupo</label>
-      <input placeholder="Título do grupo" onChange={event => setNewQuestion(event.target.value)} />
+      <Typography variant="h5" component="h2" style={{ marginBottom: 12 }}>
+        Titulo do grupo
+      </Typography>
+      <TextField
+        variant="outlined"
+        placeholder="Título do grupo"
+        style={{ background: "#fff", marginBottom: 20 }}
+        onChange={event => setNewQuestion(event.target.value)}
+      />
 
-      <div className="add-question">
-        <label>Questão</label>
-        <input placeholder="Questão" onChange={event => setNewQuestion(event.target.value)} />
-        <Button onClick={handleAddItem}>Adicionar questão</Button>
-      </div>
-
-      {questions.map((e, index) => (
-        <div key={`${e} ${index}`} className="question">
-          <span>{e}</span>
-          <button onClick={() => handleRemoveItem(index)}>remover</button>
-        </div>
-      ))}
-      <Button onClick={handleAddItem}>Enviar</Button>
+      <Typography variant="h5" component="h2" style={{ marginBottom: 12 }}>
+        Nome da questão
+      </Typography>
+      <TextField
+        variant="outlined"
+        placeholder="Questão"
+        style={{ background: "#fff" }}
+        onChange={event => setNewQuestion(event.target.value)}
+      />
+      <Button variant="contained" color="secondary" size="small" onClick={handleAddItem} style={{ marginBottom: 20 }}>
+        Adicionar questão
+      </Button>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="droppable">
+          {providedDroppable => (
+            <div {...providedDroppable.droppableProps} ref={providedDroppable.innerRef}>
+              {questions.map((e, index) => (
+                <Draggable key={index} draggableId={index.toString()} index={index}>
+                  {providedDraggable => (
+                    <QuestionCard
+                      id={index}
+                      title={e.title}
+                      provided={providedDraggable}
+                      dragHandleProps={providedDraggable.dragHandleProps}
+                      draggableProps={providedDraggable.draggableProps}
+                      onClickAddImage={() => {}}
+                      onClickRemove={() => handleRemoveItem(index)}
+                    />
+                  )}
+                </Draggable>
+              ))}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Button id="send-button" variant="contained" color="primary" size="large" onClick={cretaeGroupQuestion}>
+        Enviar
+      </Button>
     </Container>
   );
 }
