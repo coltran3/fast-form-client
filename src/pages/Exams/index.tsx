@@ -63,8 +63,8 @@ function Main() {
           <Grid item>
             <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
               <ContentCard>
-                {exams.data.data.map(({ title, startedAt }) => {
-                  return <Card title={title} date={startedAt} />;
+                {exams.data.data.map(({ id, title, startedAt }) => {
+                  return <Card key={id} title={title} date={startedAt} />;
                 })}
               </ContentCard>
             </GroupDisplaying>
