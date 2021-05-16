@@ -17,6 +17,7 @@ export interface QuestionGroup {
   title: string;
   type: "noType" | "class" | "personal";
   questions: Question[];
+  id: number;
 }
 
 export interface Question {
