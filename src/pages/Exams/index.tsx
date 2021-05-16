@@ -14,9 +14,9 @@ import { ErrorView } from "../../components/ErrorView";
 import { ApiEntityWrapper } from "../../api/types";
 import { PageLoad } from "../../components/PageLoad";
 import { ExamsContext } from "./context";
-import { GroupQuestion } from "./GroupQuestion";
 
-const Create = lazy(async () => import("./Create/index").then(m => ({ default: m.Create })));
+const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
+const GroupQuestion = lazy(async () => import("./GroupQuestion").then(m => ({ default: m.GroupQuestion })));
 
 function Main() {
   const { push } = useHistory();
