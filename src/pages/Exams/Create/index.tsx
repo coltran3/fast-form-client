@@ -8,6 +8,8 @@ import { apiClient } from "../../../api";
 import { Exam } from "../types";
 import { useAuthContext, useNotificationContext } from "../../../stores";
 import { useHistory } from "react-router";
+import { ApiEntityWrapper } from "../../../api/types";
+import { useExamsContext } from "../context";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -15,6 +17,7 @@ const StyledTextField = styled(TextField)`
 
 export function Create() {
   const { user } = useAuthContext();
+  const { setExam } = useExamsContext();
   const { showNotification } = useNotificationContext();
   const { push } = useHistory();
   const { handleSubmit, control } = useForm({
@@ -69,12 +72,13 @@ export function Create() {
       );
     },
     {
-      onSuccess() {
-        showNotification({ message: "Usuário cadastrado com sucesso", type: "success" });
-        push("./");
+      onSuccess(newExam: ApiEntityWrapper<Exam>) {
+        setExam(newExam.data.data);
+        showNotification({ message: "Exame criado com sucesso", type: "success" });
+        push(`/${newExam.data.data.id}/group`);
       },
       onError() {
-        showNotification({ message: "Ocorreu algum erro ao tentar cadastrar o usuário", type: "error" });
+        showNotification({ message: "Ocorreu algum erro ao tentar criar um exame", type: "error" });
       },
     },
   );
@@ -98,10 +102,6 @@ export function Create() {
               control={control}
               rules={{
                 required: "Informe o titulo da avaliação",
-                validate({ title }) {
-                  console.log(title);
-                  return undefined;
-                },
               }}
               render={({ field: { onChange, value }, fieldState: { error } }) => {
                 return (
