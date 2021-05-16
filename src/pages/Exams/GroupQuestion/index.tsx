@@ -1,9 +1,9 @@
 import { Button, TextField, Typography } from "@material-ui/core";
-import { apiClient } from "../../api";
+import { apiClient } from "../../../api";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState } from "react";
 import { Container } from "./styles";
-import { QuestionCard } from "../question-card";
+import { QuestionCard } from "../../../components/question-card";
 
 interface IGroupQuestion {
   title: String;

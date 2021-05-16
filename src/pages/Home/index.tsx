@@ -1,5 +1,5 @@
 import React from "react";
-import GroupQuestion from "../../components/GroupQuestion";
+import GroupQuestion from "../Exams/GroupQuestion";
 import { StartedExam } from "../../components/StartedExam";
 import Dialog from "@material-ui/core/Dialog";
 import { Container } from "./styles";
