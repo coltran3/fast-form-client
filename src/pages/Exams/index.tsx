@@ -22,7 +22,7 @@ const Delete = lazy(async () => import("./Delete").then(m => ({ default: m.Delet
 function Main() {
   const { push } = useHistory();
   const { user } = useAuthContext();
-  const { url, path } = useRouteMatch();
+  const { url } = useRouteMatch();
   const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
     return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
   });
