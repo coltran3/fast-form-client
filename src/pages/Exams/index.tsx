@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useState } from "react";
 import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
 import { TextField, Button, InputAdornment, Grid } from "@material-ui/core";
 import Card from "../../components/Card";
@@ -13,6 +13,7 @@ import { useAuthContext } from "../../stores";
 import { ErrorView } from "../../components/ErrorView";
 import { ApiEntityWrapper } from "../../api/types";
 import { PageLoad } from "../../components/PageLoad";
+import { ExamsContext } from "./context";
 
 const Create = lazy(async () => import("./Create/index").then(m => ({ default: m.Create })));
 
@@ -20,9 +21,13 @@ function Main() {
   const { push } = useHistory();
   const { user } = useAuthContext();
   const { url } = useRouteMatch();
-  const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
-    return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
-  });
+  const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>(
+    "exams",
+    () => {
+      return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
+    },
+    { onSuccess: data => console.log(data) },
+  );
 
   function handleCreateClick() {
     push(`${url}/create`);
@@ -72,11 +77,14 @@ function Main() {
 
 export function Exams() {
   const { path } = useRouteMatch();
+  const [exam, setExam] = useState<Exam>();
 
   return (
     <Switch>
-      <Route exact path={`${path}`} component={Main} />
-      <Route path={`${path}/create`} component={Create} />
+      <ExamsContext.Provider value={{ exam, setExam }}>
+        <Route exact path={`${path}`} component={Main} />
+        <Route path={`${path}/create`} component={Create} />
+      </ExamsContext.Provider>
     </Switch>
   );
 }
