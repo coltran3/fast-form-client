@@ -17,6 +17,7 @@ import { ExamsContext } from "./context";
 
 const Create = lazy(async () => import("./Create").then(m => ({ default: m.Create })));
 const GroupQuestion = lazy(async () => import("./GroupQuestion").then(m => ({ default: m.GroupQuestion })));
+const Delete = lazy(async () => import("./Delete").then(m => ({ default: m.Delete })));
 
 function Main() {
   const { push } = useHistory();
@@ -61,7 +62,19 @@ function Main() {
             <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
               <ContentCard>
                 {exams.data.data.map(({ id, title, startedAt }) => {
-                  return <Card key={id} title={title} date={startedAt} />;
+                  return (
+                    <Card
+                      key={id}
+                      title={title}
+                      date={startedAt}
+                      onEdit={() => {
+                        push(`${url}/edit/${id}`);
+                      }}
+                      onDelete={() => {
+                        push(`${url}/delete/${id}`);
+                      }}
+                    />
+                  );
                 })}
               </ContentCard>
             </GroupDisplaying>
@@ -80,8 +93,9 @@ export function Exams() {
     <Switch>
       <ExamsContext.Provider value={{ exam, setExam }}>
         <Route exact path={`${path}`} component={Main} />
-        <Route path={`${path}/create`} component={Create} />
-        <Route path={`${path}/:id/group`} component={GroupQuestion} />
+        <Route path={[`${path}/create`, `${path}/edit/:examId`]} component={Create} />
+        <Route path={`${path}/:examId/group`} component={GroupQuestion} />
+        <Route path={`${path}/delete/:examId`} component={Delete} />
         <Redirect to="/exams" />
       </ExamsContext.Provider>
     </Switch>

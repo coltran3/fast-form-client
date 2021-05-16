@@ -52,9 +52,6 @@ export function GroupQuestion() {
   });
   const { mutate: createQuestions, isLoading: isLoadingCreateQuestions } = useMutation(
     ({ groupId, questions }: CreateQuestionParams) => {
-      console.log("groupId on mutate func", groupId);
-      console.log("questions on mutate func", questions);
-
       return apiClient.post(
         `/question${groupId ? `/${groupId}` : ""}`,
         { questions },
