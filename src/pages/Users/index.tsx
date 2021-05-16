@@ -1,4 +1,4 @@
-import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
+import { Switch, Route, useHistory, useRouteMatch, Redirect } from "react-router-dom";
 import { lazy } from "react";
 import { Button, List, ListItem, ListItemText } from "@material-ui/core";
 import styled from "styled-components";
@@ -94,6 +94,7 @@ export function Users() {
     <Switch>
       <Route exact path={`${path}`} component={Main} />
       <Route exact path={`${path}/create`} component={Create} />
+      <Redirect to="/users" />
     </Switch>
   );
 }

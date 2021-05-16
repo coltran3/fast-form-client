@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
+import { Switch, Route, useHistory, useRouteMatch, Redirect } from "react-router-dom";
 import { TextField, Button, InputAdornment, Grid } from "@material-ui/core";
 import Card from "../../components/Card";
 import { GroupDisplaying } from "../../components/GroupDisplaying";
@@ -82,6 +82,7 @@ export function Exams() {
         <Route exact path={`${path}`} component={Main} />
         <Route path={`${path}/create`} component={Create} />
         <Route path={`${path}/:id/group`} component={GroupQuestion} />
+        <Redirect to="/exams" />
       </ExamsContext.Provider>
     </Switch>
   );

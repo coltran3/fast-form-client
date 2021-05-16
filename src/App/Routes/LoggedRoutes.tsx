@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import React from "react";
 import { TopBar } from "../../components/Topbar";
 import { useAuthContext } from "../../stores";
 import { Container as MuiContainer } from "@material-ui/core";
 import styled from "styled-components";
 
-const Home = React.lazy(async () => import("../../pages/Home").then(m => ({ default: m.Home })));
 const Exams = React.lazy(async () => import("../../pages/Exams").then(m => ({ default: m.Exams })));
 const Users = React.lazy(async () => import("../../pages/Users").then(m => ({ default: m.Users })));
 
@@ -22,9 +21,9 @@ export function LoggedRoutes() {
       <TopBar logout={logout} />
       <Container>
         <Switch>
-          <Route exact path="/" component={Home} />
           <Route path="/exams" component={Exams} />
           <Route path="/users" component={Users} />
+          <Redirect to="/exams" />
         </Switch>
       </Container>
     </Router>
