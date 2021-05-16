@@ -14,6 +14,7 @@ import { ErrorView } from "../../components/ErrorView";
 import { ApiEntityWrapper } from "../../api/types";
 import { PageLoad } from "../../components/PageLoad";
 import { ExamsContext } from "./context";
+import { GroupQuestion } from "./GroupQuestion";
 
 const Create = lazy(async () => import("./Create/index").then(m => ({ default: m.Create })));
 
@@ -21,13 +22,9 @@ function Main() {
   const { push } = useHistory();
   const { user } = useAuthContext();
   const { url } = useRouteMatch();
-  const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>(
-    "exams",
-    () => {
-      return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
-    },
-    { onSuccess: data => console.log(data) },
-  );
+  const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
+    return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
+  });
 
   function handleCreateClick() {
     push(`${url}/create`);
@@ -84,6 +81,7 @@ export function Exams() {
       <ExamsContext.Provider value={{ exam, setExam }}>
         <Route exact path={`${path}`} component={Main} />
         <Route path={`${path}/create`} component={Create} />
+        <Route path={`${path}/:id/group`} component={GroupQuestion} />
       </ExamsContext.Provider>
     </Switch>
   );
