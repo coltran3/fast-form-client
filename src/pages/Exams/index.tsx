@@ -22,7 +22,7 @@ const Delete = lazy(async () => import("./Delete").then(m => ({ default: m.Delet
 function Main() {
   const { push } = useHistory();
   const { user } = useAuthContext();
-  const { url } = useRouteMatch();
+  const { url, path } = useRouteMatch();
   const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
     return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
   });
@@ -32,56 +32,59 @@ function Main() {
   }
 
   return (
-    <Grid container direction="column" alignItems="stretch" spacing={3}>
-      <Grid item>
-        <Header>
-          <TextField
-            label="Buscar avaliação"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon classes={{ root: "searchIcon" }} />
-                </InputAdornment>
-              ),
-            }}
-            variant="outlined"
-          />
-          <Button variant="contained" color="primary" onClick={handleCreateClick}>
-            Cadastrar avaliações
-          </Button>
-        </Header>
-      </Grid>
+    <>
+      <Grid container direction="column" alignItems="stretch" spacing={3}>
+        <Grid item>
+          <Header>
+            <TextField
+              label="Buscar avaliação"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon classes={{ root: "searchIcon" }} />
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
+            />
+            <Button variant="contained" color="primary" onClick={handleCreateClick}>
+              Cadastrar avaliações
+            </Button>
+          </Header>
+        </Grid>
 
-      {isLoading ? (
-        <PageLoad />
-      ) : isError ? (
-        <ErrorView>Houve algum erro na busca de usuários</ErrorView>
-      ) : exams && exams.data && exams.data.data ? (
-        <>
-          <Grid item>
-            <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
-              <ContentCard>
-                {exams.data.data.map(({ id, title, startedAt }) => {
-                  return (
-                    <Card
-                      key={id}
-                      title={title}
-                      date={startedAt}
-                      onEdit={() => {
-                        push(`${url}/edit/${id}`);
-                      }}
-                      onDelete={() => {
-                        push(`${url}/delete/${id}`);
-                      }}
-                    />
-                  );
-                })}
-              </ContentCard>
-            </GroupDisplaying>
-          </Grid>
-        </>
-      ) : null}
-    </Grid>
+        {isLoading ? (
+          <PageLoad />
+        ) : isError ? (
+          <ErrorView>Houve algum erro na busca de usuários</ErrorView>
+        ) : exams && exams.data && exams.data.data ? (
+          <>
+            <Grid item>
+              <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
+                <ContentCard>
+                  {exams.data.data.map(({ id, title, startedAt }) => {
+                    return (
+                      <Card
+                        key={id}
+                        title={title}
+                        date={startedAt}
+                        onEdit={() => {
+                          push(`${url}/edit/${id}`);
+                        }}
+                        onDelete={() => {
+                          push(`${url}/delete/${id}`);
+                        }}
+                      />
+                    );
+                  })}
+                </ContentCard>
+              </GroupDisplaying>
+            </Grid>
+          </>
+        ) : null}
+      </Grid>
+      <Route path={`${path}/delete/:examId`} component={Delete} />
+    </>
   );
 }
 
@@ -92,10 +95,9 @@ export function Exams() {
   return (
     <Switch>
       <ExamsContext.Provider value={{ exam, setExam }}>
-        <Route exact path={`${path}`} component={Main} />
+        <Route path={`${path}`} component={Main} />
         <Route path={[`${path}/create`, `${path}/edit/:examId`]} component={Create} />
         <Route path={`${path}/:examId/group`} component={GroupQuestion} />
-        <Route path={`${path}/delete/:examId`} component={Delete} />
         <Redirect to="/exams" />
       </ExamsContext.Provider>
     </Switch>
