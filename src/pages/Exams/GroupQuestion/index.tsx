@@ -204,7 +204,7 @@ export function GroupQuestion() {
                 render={({ field: { onChange, value } }) => {
                   return (
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">Tipo do group de questões</FormLabel>
+                      <FormLabel component="legend">Tipo do groupo de questões</FormLabel>
                       <RadioGroup aria-label="type" name="type" value={value} onChange={onChange}>
                         <FormControlLabel value="class" control={<Radio color="primary" />} label="Matéria" />
                         <FormControlLabel value="personal" control={<Radio color="primary" />} label="Pessoal" />
