@@ -18,6 +18,9 @@ export function Delete() {
   const { push } = useHistory();
   const { showNotification } = useNotificationContext();
   const { examId } = useParams<ExamRouteParams>();
+  const { refetch } = useQuery<ApiEntityWrapper<Exam[]>>("exams", () => {
+    return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
+  });
   const { data: exam, isLoading } = useQuery<ApiEntityWrapper<Exam>>(
     ["exam", examId],
     () => {
@@ -39,8 +42,9 @@ export function Delete() {
       return apiClient.delete(`/exam/${id}`, { headers: { Authorization: `Bearer ${user}` } });
     },
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         showNotification({ message: "Avaliação apagada com sucesso", type: "success" });
+        await refetch();
         handleClose();
       },
       onError: () => {
