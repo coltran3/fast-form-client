@@ -41,7 +41,7 @@ export function GroupQuestion() {
   const { user } = useAuthContext();
   const { push } = useHistory();
   const { showNotification } = useNotificationContext();
-  const { handleSubmit, control, reset } = useForm<QuestionGroup>({
+  const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
   const { fields, append, remove, swap } = useFieldArray({
@@ -149,7 +149,8 @@ export function GroupQuestion() {
   );
 
   function questionSubmit(values: Pick<Question, "statement" | "required">) {
-    append(values);
+    const formValues = getValues();
+    setValue("questions", [...formValues.questions, values] as any);
   }
 
   function handleRemoveItem(idx: number) {
