@@ -7,6 +7,7 @@ export interface Exam {
   startedAt: string;
   endedAt?: string;
   allowAnonymous: boolean;
+  groups: QuestionGroup[];
 }
 
 export interface ExamsState {
@@ -31,4 +32,14 @@ export interface Question {
 
 export interface ExamRouteParams {
   examId?: string;
+  groupId?: string;
+}
+
+export interface ApiQuestionGroup {
+  class: boolean;
+  personal: boolean;
+  position: number;
+  examId: number;
+  questions: Question[];
+  title: string;
 }

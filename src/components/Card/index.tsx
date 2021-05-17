@@ -10,12 +10,13 @@ import dayjs from "dayjs";
 interface Icard {
   title: string;
   date?: string;
+  onClick: () => void;
   onDelete: () => void;
   onEdit: () => void;
   // status: "aberto" | "fechado" | "recente" | "novo";
 }
 
-export default function Card({ title, date, onEdit, onDelete }: Icard) {
+export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) {
   const formatedDate = Boolean(date) ? dayjs(date).format("DD/MM/YYYY") : undefined;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -30,8 +31,8 @@ export default function Card({ title, date, onEdit, onDelete }: Icard) {
   return (
     <Container>
       <Content>
-        <NewReleasesIcon />
-        <TitleAndDate>
+        <NewReleasesIcon onClick={onClick} />
+        <TitleAndDate onClick={onClick}>
           <strong>{title}</strong>
           {formatedDate && <span>{formatedDate}</span>}
         </TitleAndDate>
