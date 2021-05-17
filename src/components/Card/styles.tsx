@@ -8,6 +8,7 @@ export const Container = styled(MuiCard)`
   align-items: center;
   color: ${props => props.theme.grey["3"]} !important;
 `;
+
 export const Content = styled(MuiCardContent)`
   width: 100%;
   display: flex;

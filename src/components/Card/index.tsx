@@ -33,7 +33,7 @@ export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) 
       <Content>
         <NewReleasesIcon onClick={onClick} />
         <TitleAndDate onClick={onClick}>
-          <strong>{title}</strong>
+          <strong>{title.length > 10 ? title.substring(0, 10) + "..." : title}</strong>
           {formatedDate && <span>{formatedDate}</span>}
         </TitleAndDate>
       </Content>
