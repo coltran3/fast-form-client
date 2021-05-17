@@ -69,7 +69,7 @@ export function GroupQuestion() {
       },
     },
   );
-  const { handleSubmit: handleQuestionSubmit, control: questionControl } = useForm({
+  const { handleSubmit: handleQuestionSubmit, control: questionControl, reset: questionReset } = useForm({
     defaultValues: { statement: "", required: false },
   });
   const { mutate: createQuestions, isLoading: isLoadingCreateQuestions } = useMutation(
@@ -152,6 +152,7 @@ export function GroupQuestion() {
   function questionSubmit(values: Pick<Question, "statement" | "required">) {
     const formValues = getValues();
     setValue("questions", [...formValues.questions, values] as any);
+    questionReset({ required: false, statement: "" });
   }
 
   function handleRemoveItem(idx: number) {
@@ -220,14 +221,14 @@ export function GroupQuestion() {
                 name="statement"
                 control={questionControl}
                 rules={{
-                  required: "Informe o nome da questão",
+                  required: "Informe o enunciado da pergunta",
                 }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => {
                   return (
                     <>
                       <StyledTextField
                         variant="outlined"
-                        placeholder="Nome da questão"
+                        placeholder="Enunciado da pergunta"
                         value={value}
                         onChange={onChange}
                         error={Boolean(error)}
