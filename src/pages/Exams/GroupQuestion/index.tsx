@@ -73,8 +73,7 @@ export function GroupQuestion() {
   });
   const { mutate: createQuestions, isLoading: isLoadingCreateQuestions } = useMutation(
     ({ groupId, questions }: CreateQuestionParams) => {
-      console.log(groupId, questions);
-      return apiClient.put(
+      return apiClient.post(
         `/question${groupId ? `/${groupId}` : ""}`,
         { questions },
         { headers: { Authorization: `Bearer ${user}` } },
@@ -258,7 +257,7 @@ export function GroupQuestion() {
                       ref={providedDroppable.innerRef}
                     >
                       {fields.map(({ statement, id }, idx) => (
-                        <Draggable key={id} draggableId={id} index={idx}>
+                        <Draggable key={`${id}`} draggableId={`${id}`} index={idx}>
                           {providedDraggable => (
                             <Grid item>
                               <QuestionCard
@@ -274,6 +273,7 @@ export function GroupQuestion() {
                           )}
                         </Draggable>
                       ))}
+                      {providedDroppable.placeholder}
                     </Grid>
                   )}
                 </Droppable>
