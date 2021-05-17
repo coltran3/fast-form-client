@@ -3,7 +3,7 @@ import { Container, Content, TitleAndDate, NewReleasesIcon } from "./styles";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { IconButton, ListItemIcon, MenuItem, Typography } from "@material-ui/core";
+import { IconButton, ListItemIcon, MenuItem, Tooltip, Typography } from "@material-ui/core";
 import { CardActions, Menu } from "@material-ui/core";
 import dayjs from "dayjs";
 
@@ -32,10 +32,13 @@ export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) 
     <Container>
       <Content>
         <NewReleasesIcon onClick={onClick} />
-        <TitleAndDate onClick={onClick}>
-          <strong>{title.length > 10 ? title.substring(0, 10) + "..." : title}</strong>
-          {formatedDate && <span>{formatedDate}</span>}
-        </TitleAndDate>
+
+        <Tooltip title={title} aria-label="add">
+          <TitleAndDate onClick={onClick}>
+            <strong>{title.length > 10 ? title.substring(0, 10) + "..." : title}</strong>
+            {formatedDate && <span>{formatedDate}</span>}
+          </TitleAndDate>
+        </Tooltip>
       </Content>
       <CardActions>
         <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
