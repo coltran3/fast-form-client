@@ -95,7 +95,7 @@ export function Create() {
       onSuccess(newExam: ApiEntityWrapper<Exam>) {
         setExam(newExam.data.data);
         showNotification({ message: "Exame criado com sucesso", type: "success" });
-        push(`/exams/${newExam.data.data.id}/group`);
+        push(`/exams/${newExam.data.data.id}/question-group`);
       },
       onError() {
         showNotification({ message: "Ocorreu algum erro ao tentar criar um exame", type: "error" });
