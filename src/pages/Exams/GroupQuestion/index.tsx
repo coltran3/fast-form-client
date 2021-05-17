@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Radio,
   CircularProgress,
+  Checkbox,
 } from "@material-ui/core";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { QuestionCard } from "../../../components/QuestionCard";
@@ -44,7 +45,7 @@ export function GroupQuestion() {
   const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
-  const { fields, append, remove, swap } = useFieldArray({
+  const { fields, remove, swap } = useFieldArray({
     control,
     name: "questions",
   });
@@ -223,13 +224,27 @@ export function GroupQuestion() {
                 }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => {
                   return (
-                    <StyledTextField
-                      variant="outlined"
-                      placeholder=" Nome da questão"
-                      value={value}
-                      onChange={onChange}
-                      error={Boolean(error)}
-                      helperText={error?.message}
+                    <>
+                      <StyledTextField
+                        variant="outlined"
+                        placeholder="Nome da questão"
+                        value={value}
+                        onChange={onChange}
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                      />
+                    </>
+                  );
+                }}
+              />
+              <Controller
+                name="required"
+                control={questionControl}
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <FormControlLabel
+                      control={<Checkbox value={value} onChange={onChange} color="primary" />}
+                      label="Obrigatório"
                     />
                   );
                 }}
