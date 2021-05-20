@@ -42,7 +42,7 @@ export function GroupQuestion() {
   const { user } = useAuthContext();
   const { push } = useHistory();
   const { showNotification } = useNotificationContext();
-  const { handleSubmit, control, reset, getValues, setValue, register } = useForm<QuestionGroup>({
+  const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
   const { fields, remove, swap } = useFieldArray({
