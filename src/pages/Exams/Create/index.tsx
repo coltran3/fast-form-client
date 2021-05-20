@@ -241,10 +241,13 @@ export function Create() {
             <Controller
               name="allowAnonymous"
               control={control}
-              render={({ field: { onChange, value } }) => {
+              render={props => {
                 return (
                   <FormControlLabel
-                    control={<Checkbox value={value} onChange={onChange} color="primary" />}
+                    {...props}
+                    checked={props.field.value}
+                    control={<Checkbox color="primary" />}
+                    onChange={props.field.onChange}
                     label="Permitir respostas anónimas"
                   />
                 );
