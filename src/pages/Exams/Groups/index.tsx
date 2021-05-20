@@ -2,7 +2,7 @@ import { Accordion, AccordionSummary, Button, Typography, AccordionActions } fro
 import { useHistory, useParams } from "react-router";
 import { PagesTitle } from "../../../components/PagesTitle";
 import { Exam, ExamRouteParams, QuestionGroup } from "../types";
-import { QueryClient, useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { apiClient } from "../../../api";
 import { ApiEntityWrapper } from "../../../api/types";
 import { useAuthContext, useNotificationContext } from "../../../stores";

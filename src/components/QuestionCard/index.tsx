@@ -9,10 +9,12 @@ import styled from "styled-components";
 import { FlexSpacer } from "../FlexSpacer";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ImageIcon from "@material-ui/icons/Image";
+import EditIcon from "@material-ui/icons/Edit";
 
 interface Props {
   idx: number;
   title: String;
+  onClickEdit: () => void;
   onClickAddImage: () => void;
   onClickRemove: () => void;
   provided: DraggableProvided;
@@ -29,6 +31,7 @@ export function QuestionCard({
   idx,
   title,
   provided,
+  onClickEdit,
   onClickAddImage,
   onClickRemove,
   draggableProps,
@@ -43,11 +46,15 @@ export function QuestionCard({
       </CardContent>
       <FlexSpacer />
       <CardActions>
-        <IconButton aria-label="delete" size="small" onClick={onClickRemove}>
+        <IconButton aria-label="edit" size="small" onClick={onClickEdit}>
+          <EditIcon />
+        </IconButton>
+
+        <IconButton aria-label="delete" size="small" color="secondary" onClick={onClickRemove}>
           <DeleteIcon />
         </IconButton>
 
-        <IconButton aria-label="delete" size="small" onClick={onClickAddImage}>
+        <IconButton aria-label="image" size="small" onClick={onClickAddImage}>
           <ImageIcon />
         </IconButton>
       </CardActions>

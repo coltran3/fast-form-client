@@ -28,6 +28,7 @@ export interface Question {
   imageUrl: string;
   imageAlt: string;
   groupId: 0;
+  id: number;
 }
 
 export interface ExamRouteParams {

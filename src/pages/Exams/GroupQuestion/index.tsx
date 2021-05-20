@@ -42,7 +42,7 @@ export function GroupQuestion() {
   const { user } = useAuthContext();
   const { push } = useHistory();
   const { showNotification } = useNotificationContext();
-  const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
+  const { handleSubmit, control, reset, getValues, setValue, register } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
   const { fields, remove, swap } = useFieldArray({
@@ -69,7 +69,9 @@ export function GroupQuestion() {
       },
     },
   );
-  const { handleSubmit: handleQuestionSubmit, control: questionControl, reset: questionReset } = useForm({
+  const { handleSubmit: handleQuestionSubmit, control: questionControl, reset: questionReset } = useForm<
+    Partial<Question>
+  >({
     defaultValues: { statement: "", required: false },
   });
   const { mutate: createQuestions, isLoading: isLoadingCreateQuestions } = useMutation(
@@ -149,7 +151,7 @@ export function GroupQuestion() {
     },
   );
 
-  function questionSubmit(values: Pick<Question, "statement" | "required">) {
+  function questionSubmit(values: Partial<Question>) {
     const formValues = getValues();
     setValue("questions", [...formValues.questions, values] as any);
     questionReset({ required: false, statement: "" });
@@ -163,6 +165,21 @@ export function GroupQuestion() {
     if (!result.destination) return;
 
     swap(result.source.index, result.destination.index);
+  }
+
+  function handleEdit(id: number) {
+    const values = getValues();
+
+    const value = values.questions.find(question => {
+      return question.id === id;
+    });
+
+    if (value) {
+      const newQuestions = values.questions.filter(question => question.id !== id);
+
+      setValue("questions", newQuestions);
+      questionReset(value);
+    }
   }
 
   function submit(values: QuestionGroup) {
@@ -241,11 +258,14 @@ export function GroupQuestion() {
               <Controller
                 name="required"
                 control={questionControl}
-                render={({ field: { onChange, value } }) => {
+                render={props => {
                   return (
                     <FormControlLabel
-                      control={<Checkbox value={value} onChange={onChange} color="primary" />}
+                      {...props}
+                      checked={props.field.value}
+                      control={<Checkbox color="primary" />}
                       label="Obrigatório"
+                      onChange={props.field.onChange}
                     />
                   );
                 }}
@@ -273,7 +293,7 @@ export function GroupQuestion() {
                       {...providedDroppable.droppableProps}
                       ref={providedDroppable.innerRef}
                     >
-                      {fields.map(({ statement, id }, idx) => (
+                      {fields.map(({ statement, id }: any, idx) => (
                         <Draggable key={`${id}`} draggableId={`${id}`} index={idx}>
                           {providedDraggable => (
                             <Grid item>
@@ -285,6 +305,7 @@ export function GroupQuestion() {
                                 draggableProps={providedDraggable.draggableProps}
                                 onClickAddImage={() => {}}
                                 onClickRemove={() => handleRemoveItem(idx)}
+                                onClickEdit={() => handleEdit(id)}
                               />
                             </Grid>
                           )}
