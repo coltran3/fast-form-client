@@ -22,6 +22,8 @@ import { useAuthContext, useNotificationContext } from "../../../stores";
 import { useHistory, useParams } from "react-router";
 import { ApiEntityWrapper } from "../../../api/types";
 import { PageLoad } from "../../../components/PageLoad";
+import { DropzoneDialog } from "material-ui-dropzone";
+import { useState } from "react";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -45,6 +47,8 @@ export function GroupQuestion() {
   const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
+  const [openDropzone, setOpenDropzone] = useState<boolean>(false);
+
   const { fields, remove, swap } = useFieldArray({
     control,
     name: "questions",
@@ -92,7 +96,7 @@ export function GroupQuestion() {
       },
       onError: () => {
         showNotification({
-          message: "Ocorreu algum erro ao tentat adicionar as questões ao grupo de questões",
+          message: "Ocorreu algum erro ao tentar adicionar as questões ao grupo de questões",
           type: "error",
         });
       },
@@ -173,19 +177,38 @@ export function GroupQuestion() {
     const value = values.questions.find(question => {
       return question.id === id;
     });
-
     if (value) {
       const newQuestions = values.questions.filter(question => question.id !== id);
 
       setValue("questions", newQuestions);
       questionReset(value);
     }
+    console.log("value", value);
   }
 
   function submit(values: QuestionGroup) {
     isEdit ? editQuestionGroup(values) : createQuestionGroup(values);
   }
+  const handleSave = (files: File[], id: Number) => {
+    console.log("id", id);
 
+    setOpenDropzone(false);
+    let reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+
+    const formValues = getValues();
+    formValues.questions.forEach(element => {
+      console.log(element);
+      if (element.id === id) {
+        element.imageUrl = reader.result as string;
+      }
+    });
+
+    setValue("questions", [...formValues.questions]);
+  };
+
+  const handleOpen = () => setOpenDropzone(true);
+  const handleClose = () => setOpenDropzone(false);
   return (
     <>
       <PagesTitle>Grupo de questões</PagesTitle>
@@ -293,19 +316,28 @@ export function GroupQuestion() {
                       {...providedDroppable.droppableProps}
                       ref={providedDroppable.innerRef}
                     >
-                      {fields.map(({ statement, id }: any, idx) => (
+                      {fields.map(({ statement, id, imageUrl }: any, idx) => (
                         <Draggable key={`${id}`} draggableId={`${id}`} index={idx}>
                           {providedDraggable => (
                             <Grid item>
                               <QuestionCard
                                 idx={idx}
-                                title={statement}
+                                title={statement + `${id}`}
+                                isImage={imageUrl != null}
                                 provided={providedDraggable}
                                 dragHandleProps={providedDraggable.dragHandleProps}
                                 draggableProps={providedDraggable.draggableProps}
-                                onClickAddImage={() => {}}
+                                onClickAddImage={() => handleOpen()}
                                 onClickRemove={() => handleRemoveItem(idx)}
                                 onClickEdit={() => handleEdit(id)}
+                              />
+                              <DropzoneDialog
+                                open={openDropzone}
+                                onSave={value => handleSave(value, id)}
+                                acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
+                                showPreviews={true}
+                                maxFileSize={5000000}
+                                onClose={handleClose}
                               />
                             </Grid>
                           )}
