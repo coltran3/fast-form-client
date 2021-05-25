@@ -15,6 +15,7 @@ import SmsFailedRoundedIcon from "@material-ui/icons/SmsFailedRounded";
 interface Props {
   idx: number;
   title: String;
+  isImage?: boolean;
   onClickEdit: () => void;
   onClickAddImage: () => void;
   onClickRemove: () => void;
@@ -40,6 +41,7 @@ const StyledSmsFailedRoundedIcon = styled(SmsFailedRoundedIcon)`
 export function QuestionCard({
   idx,
   title,
+  isImage,
   provided,
   onClickEdit,
   onClickAddImage,
@@ -69,7 +71,7 @@ export function QuestionCard({
         </IconButton>
 
         <IconButton aria-label="image" size="small" onClick={onClickAddImage}>
-          <ImageIcon />
+          <ImageIcon style={{ color: isImage ? "green" : "grey" }} />
         </IconButton>
       </CardActions>
     </StyledCard>
