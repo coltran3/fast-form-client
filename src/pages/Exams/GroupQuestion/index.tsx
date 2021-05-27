@@ -38,6 +38,11 @@ interface CreateQuestionParams {
   questions: Question[];
 }
 
+interface UploadImageParams {
+  image: FormData;
+  id: number | undefined;
+}
+
 export function GroupQuestion() {
   const { examId, groupId } = useParams<ExamRouteParams>();
   const isEdit = Boolean(groupId);
@@ -47,7 +52,7 @@ export function GroupQuestion() {
   const { handleSubmit, control, reset, getValues, setValue } = useForm<QuestionGroup>({
     defaultValues: { title: "", type: "noType", questions: [] },
   });
-  const [openDropzone, setOpenDropzone] = useState<boolean>(false);
+  const [questionId, setQuestionId] = useState<number>();
 
   const { fields, remove, swap } = useFieldArray({
     control,
@@ -155,6 +160,27 @@ export function GroupQuestion() {
     },
   );
 
+  const { mutate: uploadImage } = useMutation<ApiEntityWrapper<string>, Error, UploadImageParams>(
+    ({ image }) => {
+      return apiClient.post("/upload", image, { headers: { Authorization: `Bearer ${user}` } });
+    },
+    {
+      onSuccess: (newImageUrl, { id }) => {
+        if (id) {
+          const values = getValues();
+          const newQuestions = values.questions.map(question => {
+            if (question.id === id) {
+              return { ...question, imageUrl: newImageUrl.data.data };
+            }
+
+            return question;
+          });
+          setValue("questions", newQuestions);
+        }
+      },
+    },
+  );
+
   function questionSubmit(values: Partial<Question>) {
     const formValues = getValues();
     setValue("questions", [...formValues.questions, values] as any);
@@ -189,26 +215,19 @@ export function GroupQuestion() {
   function submit(values: QuestionGroup) {
     isEdit ? editQuestionGroup(values) : createQuestionGroup(values);
   }
-  const handleSave = (files: File[], id: Number) => {
-    console.log("id", id);
 
-    setOpenDropzone(false);
-    let reader = new FileReader();
-    reader.readAsDataURL(files[0]);
+  function handleSave(files: File[]) {
+    setQuestionId(undefined);
 
-    const formValues = getValues();
-    formValues.questions.forEach(element => {
-      console.log(element);
-      if (element.id === id) {
-        element.imageUrl = reader.result as string;
-      }
-    });
+    const [file] = files;
 
-    setValue("questions", [...formValues.questions]);
-  };
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      uploadImage({ image: formData, id: questionId });
+    }
+  }
 
-  const handleOpen = () => setOpenDropzone(true);
-  const handleClose = () => setOpenDropzone(false);
   return (
     <>
       <PagesTitle>Grupo de questões</PagesTitle>
@@ -323,21 +342,13 @@ export function GroupQuestion() {
                               <QuestionCard
                                 idx={idx}
                                 title={statement + `${id}`}
-                                isImage={imageUrl != null}
+                                isImage={Boolean(imageUrl)}
                                 provided={providedDraggable}
                                 dragHandleProps={providedDraggable.dragHandleProps}
                                 draggableProps={providedDraggable.draggableProps}
-                                onClickAddImage={() => handleOpen()}
+                                onClickAddImage={() => setQuestionId(id)}
                                 onClickRemove={() => handleRemoveItem(idx)}
                                 onClickEdit={() => handleEdit(id)}
-                              />
-                              <DropzoneDialog
-                                open={openDropzone}
-                                onSave={value => handleSave(value, id)}
-                                acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
-                                showPreviews={true}
-                                maxFileSize={5000000}
-                                onClose={handleClose}
                               />
                             </Grid>
                           )}
@@ -364,6 +375,19 @@ export function GroupQuestion() {
           </Grid>
         </form>
       )}
+      <DropzoneDialog
+        open={Boolean(questionId)}
+        onSave={handleSave}
+        acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
+        dropzoneText="Arraste o arquivo para esta área ou clique aqui"
+        showPreviews={true}
+        cancelButtonText="Cancelar"
+        submitButtonText="Enviar"
+        dialogTitle="Upload de imagem"
+        filesLimit={1}
+        maxFileSize={5000000}
+        onClose={() => setQuestionId(undefined)}
+      />
     </>
   );
 }
