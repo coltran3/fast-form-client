@@ -119,7 +119,7 @@ export function Create() {
       onSuccess(newExam: ApiEntityWrapper<Exam>) {
         setExam(newExam.data.data);
         showNotification({ message: "Exame editado com sucesso", type: "success" });
-        push(`/exams/${newExam.data.data.id}/question-group`);
+        push(`/exams/${newExam.data.data.id}/groups`);
       },
       onError() {
         showNotification({ message: "Ocorreu algum erro ao tentar editar um exame", type: "error" });
