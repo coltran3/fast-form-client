@@ -96,22 +96,22 @@ export function Exams() {
   const [exam, setExam] = useState<Exam>();
 
   return (
-    <Switch>
-      <ExamsContext.Provider value={{ exam, setExam }}>
+    <ExamsContext.Provider value={{ exam, setExam }}>
+      <Switch>
         <Route exact path={[`${path}`, `${path}/delete/:examId`]}>
           <Main />
-          <Route path={`${path}/delete/:examId`} component={Delete} />
+          <Route exact path={`${path}/delete/:examId`} component={Delete} />
         </Route>
-        <Route path={`${path}/:examId/groups`} component={Groups} />
-        <Route path={[`${path}/create`, `${path}/edit/:examId`]} component={Create} />
+        <Route exact path={`${path}/:examId/groups`} component={Groups} />
+        <Route exact path={[`${path}/create`, `${path}/edit/:examId`]} component={Create} />
         <Route
           exact
           path={[`${path}/:examId/question-group`, `${path}/:examId/question-group/:groupId`]}
           component={GroupQuestion}
         />
         <Redirect to="/exams" />
-      </ExamsContext.Provider>
-    </Switch>
+      </Switch>
+    </ExamsContext.Provider>
   );
 }
 
