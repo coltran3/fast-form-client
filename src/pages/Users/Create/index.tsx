@@ -1,13 +1,4 @@
-import {
-  Grid,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
-  CircularProgress,
-} from "@material-ui/core";
+import { Grid, TextField, Select, MenuItem, InputLabel, Button, CircularProgress } from "@material-ui/core";
 import styled from "styled-components";
 import { useForm, Controller } from "react-hook-form";
 import { UserParams, UserType, UserRole } from "../types";
@@ -17,12 +8,9 @@ import { USER_ROLE_TRANSLATE_OBJ, USER_TYPE_TRANSLATE_OBJ } from "../constants";
 import { useNotificationContext } from "../../../stores";
 import { useHistory } from "react-router-dom";
 import { PagesTitle } from "../../../components/PagesTitle";
+import { FullWidthFormControl } from "../../../components/FullWidthFormControl";
 
 const StyledTextField = styled(TextField)`
-  width: 100%;
-`;
-
-const StyledFormControl = styled(FormControl)`
   width: 100%;
 `;
 
@@ -114,7 +102,7 @@ export function Create() {
               rules={{ required: "Informe o tipo do usuário" }}
               render={({ field: { onChange, value }, fieldState: { error } }) => {
                 return (
-                  <StyledFormControl error={Boolean(error)} variant="outlined">
+                  <FullWidthFormControl error={Boolean(error)} variant="outlined">
                     <InputLabel id="role-input">Tipo</InputLabel>
                     <Select labelId="role-input" id="role-input" label="Função" onChange={onChange} value={value}>
                       <MenuItem value="">Selecione um valor</MenuItem>
@@ -124,7 +112,7 @@ export function Create() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </StyledFormControl>
+                  </FullWidthFormControl>
                 );
               }}
             />
@@ -137,7 +125,7 @@ export function Create() {
               rules={{ required: "Informe a função do usuário" }}
               render={({ field: { onChange, value }, fieldState: { error } }) => {
                 return (
-                  <StyledFormControl error={Boolean(error)} variant="outlined">
+                  <FullWidthFormControl error={Boolean(error)} variant="outlined">
                     <InputLabel id="role-input">Função</InputLabel>
                     <Select labelId="role-input" id="role-input" label="Função" onChange={onChange} value={value}>
                       <MenuItem value="">Selecione um valor</MenuItem>
@@ -147,7 +135,7 @@ export function Create() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </StyledFormControl>
+                  </FullWidthFormControl>
                 );
               }}
             />
