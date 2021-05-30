@@ -7,7 +7,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Header } from "./styles";
 import { ContentCard } from "./styles";
 import { useQuery } from "react-query";
-import { Exam } from "./types";
+import { Exam, ExamsToAnswer } from "./types";
 import { apiClient } from "../../api";
 import { useAuthContext } from "../../stores";
 import { ErrorView } from "../../components/ErrorView";
@@ -28,42 +28,60 @@ function Main() {
     return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
   });
 
+  const { data: examsToAnswer, isLoading: isLoadingExamsToAnswer, isError: isErrorExamsToAnswer } = useQuery<
+    ApiEntityWrapper<ExamsToAnswer>
+  >(
+    "examToAnswer",
+    () => {
+      return apiClient.get("/exam/me", { headers: { Authorization: `Bearer ${user}` } });
+    },
+    {
+      onSuccess(teste) {
+        console.log(teste);
+      },
+    },
+  );
+
   function handleCreateClick() {
     push(`${url}/create`);
   }
 
   return (
-    <>
-      <Grid container direction="column" alignItems="stretch" spacing={3}>
-        <Grid item>
-          <Header>
-            <TextField
-              label="Buscar avaliação"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon classes={{ root: "searchIcon" }} />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-            />
-            <Button variant="contained" color="primary" onClick={handleCreateClick}>
-              Cadastrar avaliações
-            </Button>
-          </Header>
-        </Grid>
+    <Grid container direction="column" spacing={3}>
+      <Grid item>
+        <Header>
+          <TextField
+            label="Buscar avaliação"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon classes={{ root: "searchIcon" }} />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+          />
+          <Button variant="contained" color="primary" onClick={handleCreateClick}>
+            Cadastrar avaliações
+          </Button>
+        </Header>
+      </Grid>
 
-        {isLoading ? (
+      {isLoading || isLoadingExamsToAnswer ? (
+        <Grid item>
           <PageLoad />
-        ) : isError ? (
+        </Grid>
+      ) : isError || isErrorExamsToAnswer ? (
+        <Grid item>
           <ErrorView>Houve algum erro na busca de usuários</ErrorView>
-        ) : exams && exams.data && exams.data.data ? (
-          <>
+        </Grid>
+      ) : (
+        <>
+          {exams && exams.data && exams.data.data && (
             <Grid item>
               <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
                 <ContentCard>
-                  {exams.data.data.map(({ id, title, startedAt, ...teste }) => {
+                  {exams.data.data.map(({ id, title, startedAt }) => {
                     return (
                       <Card
                         key={id}
@@ -84,10 +102,68 @@ function Main() {
                 </ContentCard>
               </GroupDisplaying>
             </Grid>
-          </>
-        ) : null}
-      </Grid>
-    </>
+          )}
+          {examsToAnswer &&
+            examsToAnswer.data &&
+            examsToAnswer.data.data &&
+            Boolean(examsToAnswer.data.data.alreadyAgreed.length) && (
+              <Grid item>
+                <GroupDisplaying title="Avaliações que comecei a responder" defaultDisplay>
+                  <ContentCard>
+                    {examsToAnswer?.data.data.alreadyAgreed.map(({ id, title, startedAt }) => {
+                      return (
+                        <Card
+                          key={id}
+                          title={title}
+                          date={startedAt}
+                          onClick={() => {
+                            push(`${url}/${id}/groups/`);
+                          }}
+                          onEdit={() => {
+                            push(`${url}/edit/${id}`);
+                          }}
+                          onDelete={() => {
+                            push(`${url}/delete/${id}`);
+                          }}
+                        />
+                      );
+                    })}
+                  </ContentCard>
+                </GroupDisplaying>
+              </Grid>
+            )}
+          {examsToAnswer &&
+            examsToAnswer.data &&
+            examsToAnswer.data.data &&
+            Boolean(examsToAnswer.data.data.canAgree.length) && (
+              <Grid item>
+                <GroupDisplaying title="Avaliações para responder" defaultDisplay>
+                  <ContentCard>
+                    {examsToAnswer?.data.data.canAgree.map(({ id, title, startedAt }) => {
+                      return (
+                        <Card
+                          key={id}
+                          title={title}
+                          date={startedAt}
+                          onClick={() => {
+                            push(`${url}/${id}/groups/`);
+                          }}
+                          onEdit={() => {
+                            push(`${url}/edit/${id}`);
+                          }}
+                          onDelete={() => {
+                            push(`${url}/delete/${id}`);
+                          }}
+                        />
+                      );
+                    })}
+                  </ContentCard>
+                </GroupDisplaying>
+              </Grid>
+            )}
+        </>
+      )}
+    </Grid>
   );
 }
 

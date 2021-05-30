@@ -27,7 +27,7 @@ export interface Question {
   statement: string;
   imageUrl: string;
   imageAlt: string;
-  groupId: 0;
+  groupId: number;
   id: number;
 }
 
@@ -43,4 +43,9 @@ export interface ApiQuestionGroup {
   examId: number;
   questions: Question[];
   title: string;
+}
+
+export interface ExamsToAnswer {
+  canAgree: Exam[];
+  alreadyAgreed: Exam[];
 }

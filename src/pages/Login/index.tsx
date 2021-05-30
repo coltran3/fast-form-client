@@ -65,7 +65,7 @@ const Link = styled(MuiLink)`
 
 export function Login(): JSX.Element {
   const { login } = useAuthContext();
-  const { handleSubmit, control } = useForm<LoginParams>();
+  const { handleSubmit, control } = useForm<LoginParams>({ defaultValues: { login: "", password: "" } });
   const [loading, setLoading] = useState<boolean>();
   const [error, setError] = useState<string>();
 
