@@ -8,18 +8,18 @@ export const Header = styled.header`
   align-items: center;
 `;
 
-interface ContentCardProps {
+interface ContentContainerProps {
   children: ReactNode[];
 }
 
-export function ContentCard({ children }: ContentCardProps) {
-  return (
-    <Grid container spacing={4}>
-      {children.map(c => (
-        <Grid item xs={3}>
-          {c}
-        </Grid>
-      ))}
-    </Grid>
-  );
+interface ContentCardProps {
+  children: ReactNode;
+}
+
+export function ContentContainer(props: ContentContainerProps) {
+  return <Grid container spacing={4} {...props} />;
+}
+
+export function ContentCard(props: ContentCardProps) {
+  return <Grid item xs={3} {...props} />;
 }

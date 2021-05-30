@@ -4,7 +4,7 @@ import { TextField, Button, InputAdornment, Grid } from "@material-ui/core";
 import Card from "../../components/Card";
 import { GroupDisplaying } from "../../components/GroupDisplaying";
 import SearchIcon from "@material-ui/icons/Search";
-import { Header } from "./styles";
+import { ContentContainer, Header } from "./styles";
 import { ContentCard } from "./styles";
 import { useQuery } from "react-query";
 import { Exam, ExamsToAnswer } from "./types";
@@ -19,6 +19,7 @@ const Create = lazy(async () => import("./Create").then(m => ({ default: m.Creat
 const GroupQuestion = lazy(async () => import("./GroupQuestion").then(m => ({ default: m.GroupQuestion })));
 const Delete = lazy(async () => import("./Delete").then(m => ({ default: m.Delete })));
 const Groups = lazy(async () => import("./Groups").then(m => ({ default: m.Groups })));
+const Answer = lazy(async () => import("./Answer").then(m => ({ default: m.Answer })));
 
 function Main() {
   const { push } = useHistory();
@@ -30,17 +31,9 @@ function Main() {
 
   const { data: examsToAnswer, isLoading: isLoadingExamsToAnswer, isError: isErrorExamsToAnswer } = useQuery<
     ApiEntityWrapper<ExamsToAnswer>
-  >(
-    "examToAnswer",
-    () => {
-      return apiClient.get("/exam/me", { headers: { Authorization: `Bearer ${user}` } });
-    },
-    {
-      onSuccess(teste) {
-        console.log(teste);
-      },
-    },
-  );
+  >("examToAnswer", () => {
+    return apiClient.get("/exam/me", { headers: { Authorization: `Bearer ${user}` } });
+  });
 
   function handleCreateClick() {
     push(`${url}/create`);
@@ -80,26 +73,27 @@ function Main() {
           {exams && exams.data && exams.data.data && (
             <Grid item>
               <GroupDisplaying title="Minhas Avaliações" defaultDisplay>
-                <ContentCard>
+                <ContentContainer>
                   {exams.data.data.map(({ id, title, startedAt }) => {
                     return (
-                      <Card
-                        key={id}
-                        title={title}
-                        date={startedAt}
-                        onClick={() => {
-                          push(`${url}/${id}/groups/`);
-                        }}
-                        onEdit={() => {
-                          push(`${url}/edit/${id}`);
-                        }}
-                        onDelete={() => {
-                          push(`${url}/delete/${id}`);
-                        }}
-                      />
+                      <ContentCard key={id}>
+                        <Card
+                          title={title}
+                          date={startedAt}
+                          onClick={() => {
+                            push(`${url}/${id}/groups`);
+                          }}
+                          onEdit={() => {
+                            push(`${url}/edit/${id}`);
+                          }}
+                          onDelete={() => {
+                            push(`${url}/delete/${id}`);
+                          }}
+                        />
+                      </ContentCard>
                     );
                   })}
-                </ContentCard>
+                </ContentContainer>
               </GroupDisplaying>
             </Grid>
           )}
@@ -109,26 +103,21 @@ function Main() {
             Boolean(examsToAnswer.data.data.alreadyAgreed.length) && (
               <Grid item>
                 <GroupDisplaying title="Avaliações que comecei a responder" defaultDisplay>
-                  <ContentCard>
+                  <ContentContainer>
                     {examsToAnswer?.data.data.alreadyAgreed.map(({ id, title, startedAt }) => {
                       return (
-                        <Card
-                          key={id}
-                          title={title}
-                          date={startedAt}
-                          onClick={() => {
-                            push(`${url}/${id}/groups/`);
-                          }}
-                          onEdit={() => {
-                            push(`${url}/edit/${id}`);
-                          }}
-                          onDelete={() => {
-                            push(`${url}/delete/${id}`);
-                          }}
-                        />
+                        <ContentCard key={id}>
+                          <Card
+                            title={title}
+                            date={startedAt}
+                            onClick={() => {
+                              push(`${url}/answer/${id}`);
+                            }}
+                          />
+                        </ContentCard>
                       );
                     })}
-                  </ContentCard>
+                  </ContentContainer>
                 </GroupDisplaying>
               </Grid>
             )}
@@ -138,26 +127,21 @@ function Main() {
             Boolean(examsToAnswer.data.data.canAgree.length) && (
               <Grid item>
                 <GroupDisplaying title="Avaliações para responder" defaultDisplay>
-                  <ContentCard>
+                  <ContentContainer>
                     {examsToAnswer?.data.data.canAgree.map(({ id, title, startedAt }) => {
                       return (
-                        <Card
-                          key={id}
-                          title={title}
-                          date={startedAt}
-                          onClick={() => {
-                            push(`${url}/${id}/groups/`);
-                          }}
-                          onEdit={() => {
-                            push(`${url}/edit/${id}`);
-                          }}
-                          onDelete={() => {
-                            push(`${url}/delete/${id}`);
-                          }}
-                        />
+                        <ContentCard key={id}>
+                          <Card
+                            title={title}
+                            date={startedAt}
+                            onClick={() => {
+                              push(`${url}/answer/${id}`);
+                            }}
+                          />
+                        </ContentCard>
                       );
                     })}
-                  </ContentCard>
+                  </ContentContainer>
                 </GroupDisplaying>
               </Grid>
             )}
@@ -185,6 +169,7 @@ export function Exams() {
           path={[`${path}/:examId/question-group`, `${path}/:examId/question-group/:groupId`]}
           component={GroupQuestion}
         />
+        <Route exact path={`${path}/answer/:examId`} component={Answer} />
         <Redirect to="/exams" />
       </Switch>
     </ExamsContext.Provider>

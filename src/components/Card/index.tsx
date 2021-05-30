@@ -11,8 +11,8 @@ interface Icard {
   title: string;
   date?: string;
   onClick: () => void;
-  onDelete: () => void;
-  onEdit: () => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
   // status: "aberto" | "fechado" | "recente" | "novo";
 }
 
@@ -40,35 +40,39 @@ export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) 
           </TitleAndDate>
         </Tooltip>
       </Content>
-      <CardActions>
-        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <MenuItem
-            onClick={() => {
-              onEdit();
-              handleClose();
-            }}
-          >
-            <ListItemIcon>
-              <EditIcon fontSize="small" />
-            </ListItemIcon>
-            <Typography variant="inherit">Editar</Typography>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onDelete();
-              handleClose();
-            }}
-          >
-            <ListItemIcon>
-              <DeleteIcon fontSize="small" />
-            </ListItemIcon>
-            <Typography variant="inherit">Remover</Typography>
-          </MenuItem>
-        </Menu>
-      </CardActions>
+      {onDelete && onEdit && (
+        <>
+          <CardActions>
+            <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+              <MenuItem
+                onClick={() => {
+                  onEdit();
+                  handleClose();
+                }}
+              >
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">Editar</Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDelete();
+                  handleClose();
+                }}
+              >
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">Remover</Typography>
+              </MenuItem>
+            </Menu>
+          </CardActions>
+        </>
+      )}
     </Container>
   );
 }
