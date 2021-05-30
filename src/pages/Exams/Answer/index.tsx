@@ -239,6 +239,7 @@ export function Answer() {
                                 <FormControlLabel value={3} control={<Radio />} label="3" />
                                 <FormControlLabel value={4} control={<Radio />} label="4" />
                                 <FormControlLabel value={5} control={<Radio />} label="5" />
+                                <FormControlLabel value="doesntApply" control={<Radio />} label="Não se aplica" />
                               </RadioGroup>
                             </CardActions>
                           </Card>
