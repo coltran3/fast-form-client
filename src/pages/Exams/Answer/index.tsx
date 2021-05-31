@@ -51,6 +51,13 @@ const InnerAlert = styled.div`
 
 type GroupAnswers = Record<string, number>;
 
+interface AnswerType {
+  score: number;
+  questionId: number;
+  type: "Answer";
+  gradeId?: number;
+}
+
 export function Answer() {
   const { examId } = useParams<ExamRouteParams>();
   const { user } = useAuthContext();
@@ -113,6 +120,20 @@ export function Answer() {
     },
   );
 
+  const { mutate: answer, isLoading: isLoadingAnswer } = useMutation(
+    (data: AnswerType[]) => {
+      return apiClient.post("/answer/batch", data, { headers: { Authorization: `Bearer ${user}` } });
+    },
+    {
+      onSuccess: () => {
+        showNotification({ message: "Avaliação enviada API amanhã de manhã", type: "success" });
+      },
+      onError: () => {
+        showNotification({ message: "Houve um erro ao tentar responder a avaliação", type: "error" });
+      },
+    },
+  );
+
   if (isLoadingExam || isLoadingQuestionGroup) {
     return <PageLoad />;
   }
@@ -142,8 +163,6 @@ export function Answer() {
       return acc;
     }, []);
 
-    console.log(requiredNotAnswered);
-
     if (requiredNotAnswered.length) {
       let question: Question | undefined = undefined;
 
@@ -167,7 +186,15 @@ export function Answer() {
       return;
     }
 
-    showNotification({ message: "Avaliação enviada API amanhã de manhã", type: "success" });
+    const answersMapped: AnswerType[] = Object.entries(answers).map(([id, answerValue]) => {
+      return {
+        questionId: parseInt(id.split("-")[1], 10),
+        score: answerValue,
+        type: "Answer",
+      };
+    });
+
+    answer(answersMapped);
   }
 
   if (exam && questionGroup) {
@@ -255,7 +282,7 @@ export function Answer() {
 
         <Grid container item alignItems="flex-end" xs={12}>
           <Button variant="contained" color="primary" size="large" onClick={submitQuestions}>
-            {false ? <CircularProgress color="secondary" size={26} /> : "ENVIAR"}
+            {isLoadingAnswer ? <CircularProgress color="secondary" size={26} /> : "ENVIAR"}
           </Button>
         </Grid>
       </Grid>

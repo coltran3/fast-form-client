@@ -64,6 +64,14 @@ export function Create() {
     },
   );
 
+  const { isLoading: isLoadingExamTarget } = useQuery(
+    "examTarget",
+    () => {
+      return apiClient.get("/exam-target", { headers: { Authorization: `Bearer ${user}` } });
+    },
+    { onSuccess: s => console.log(s) },
+  );
+
   const { handleSubmit, control, reset } = useForm({
     defaultValues: { title: "", description: "", startedAt: "", endedAt: "", allowAnonymous: false },
     resolver: values => {
@@ -196,7 +204,7 @@ export function Create() {
         });
   }
 
-  if (isLoadingExam || isLoadingExams) {
+  if (isLoadingExam || isLoadingExams || isLoadingExamTarget) {
     return <PageLoad />;
   }
 
