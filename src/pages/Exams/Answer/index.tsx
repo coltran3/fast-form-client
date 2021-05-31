@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Exam, ExamRouteParams, ExamsToAnswer, Question, QuestionGroup } from "../types";
 import { useMutation, useQuery } from "react-query";
 import { ApiEntityWrapper } from "../../../api/types";
@@ -61,6 +61,7 @@ interface AnswerType {
 export function Answer() {
   const { examId } = useParams<ExamRouteParams>();
   const { user } = useAuthContext();
+  const { push } = useHistory();
   const { showNotification } = useNotificationContext();
   const { data: exam, isLoading: isLoadingExam } = useQuery<ApiEntityWrapper<Exam>>(
     ["exam", examId],
@@ -122,11 +123,14 @@ export function Answer() {
 
   const { mutate: answer, isLoading: isLoadingAnswer } = useMutation(
     (data: AnswerType[]) => {
-      return apiClient.post("/answer/batch", data, { headers: { Authorization: `Bearer ${user}` } });
+      return apiClient.post(`/answer/batch/${examId ? parseInt(examId, 10) : ""}`, data, {
+        headers: { Authorization: `Bearer ${user}` },
+      });
     },
     {
       onSuccess: () => {
-        showNotification({ message: "Avaliação enviada API amanhã de manhã", type: "success" });
+        showNotification({ message: "Avaliação respondida com sucesso", type: "success" });
+        push("/exams");
       },
       onError: () => {
         showNotification({ message: "Houve um erro ao tentar responder a avaliação", type: "error" });
