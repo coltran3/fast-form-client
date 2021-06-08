@@ -66,7 +66,7 @@ function Main() {
         </Grid>
       ) : isError || isErrorExamsToAnswer ? (
         <Grid item>
-          <ErrorView>Houve algum erro na busca de usuários</ErrorView>
+          <ErrorView>Houve algum erro na busca de avaliações</ErrorView>
         </Grid>
       ) : (
         <>
