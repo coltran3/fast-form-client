@@ -93,7 +93,7 @@ export function GroupQuestion() {
     },
     {
       onSuccess: () => {
-        push("/exams");
+        push(`/exams/${examId}/groups`);
         showNotification({
           message: isEdit ? "Grupo de questões editado com sucesso" : "Grupo de questões criado com sucesso",
           type: "success",
@@ -126,7 +126,11 @@ export function GroupQuestion() {
     },
     {
       onSuccess: (newQuestionGroup, { questions }) => {
-        createQuestions({ questions, groupId: newQuestionGroup.data.data.id });
+        if (questions.length > 0) {
+          createQuestions({ questions, groupId: newQuestionGroup.data.data.id });
+        } else {
+          push(`/exams/${examId}/groups`);
+        }
       },
       onError: () => {
         showNotification({ message: "Ocorreu algum erro ao tentar criar o grupo de questões", type: "error" });
