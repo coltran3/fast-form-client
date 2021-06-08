@@ -96,7 +96,7 @@ export function Answer() {
           });
         });
 
-        return obj;
+        setAnswers(obj);
       },
     },
   );
