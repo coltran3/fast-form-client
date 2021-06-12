@@ -15,6 +15,7 @@ import SmsFailedRoundedIcon from "@material-ui/icons/SmsFailedRounded";
 interface Props {
   idx: number;
   title: String;
+  required?: boolean;
   isImage?: boolean;
   onClickEdit: () => void;
   onClickAddImage: () => void;
@@ -43,6 +44,7 @@ export function QuestionCard({
   title,
   isImage,
   provided,
+  required,
   onClickEdit,
   onClickAddImage,
   onClickRemove,
@@ -55,10 +57,11 @@ export function QuestionCard({
         <Typography variant="h6" component="h2" color="primary">
           {idx} - {title}
         </Typography>
-
-        <Tooltip title="Essa pergunta é obrigatória">
-          <StyledSmsFailedRoundedIcon type="filled" color="primary" />
-        </Tooltip>
+        {required && (
+          <Tooltip title="Essa pergunta é obrigatória">
+            <StyledSmsFailedRoundedIcon type="filled" color="primary" />
+          </Tooltip>
+        )}
       </StyledCardContent>
       <FlexSpacer />
       <CardActions>
