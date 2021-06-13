@@ -339,20 +339,23 @@ export function GroupQuestion() {
                       {...providedDroppable.droppableProps}
                       ref={providedDroppable.innerRef}
                     >
-                      {fields.map(({ statement, id, imageUrl }: any, idx) => (
+                      {fields.map(({ statement, id, imageUrl, required }: any, idx) => (
                         <Draggable key={`${id}`} draggableId={`${id}`} index={idx}>
                           {providedDraggable => (
                             <Grid item>
                               <QuestionCard
                                 idx={idx}
-                                title={statement + `${id}`}
+                                title={statement}
                                 isImage={Boolean(imageUrl)}
                                 provided={providedDraggable}
                                 dragHandleProps={providedDraggable.dragHandleProps}
                                 draggableProps={providedDraggable.draggableProps}
-                                onClickAddImage={() => setQuestionId(id)}
+                                onClickAddImage={() => {
+                                  setQuestionId(id);
+                                }}
                                 onClickRemove={() => handleRemoveItem(idx)}
                                 onClickEdit={() => handleEdit(id)}
+                                required={required}
                               />
                             </Grid>
                           )}

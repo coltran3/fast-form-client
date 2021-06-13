@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-export interface Exam {
+interface Exam {
   id: number;
   title: string;
   description: string;
@@ -10,19 +10,19 @@ export interface Exam {
   groups: QuestionGroup[];
 }
 
-export interface ExamsState {
+interface ExamsState {
   exam?: Exam;
   setExam: Dispatch<SetStateAction<Exam | undefined>>;
 }
 
-export interface QuestionGroup {
+interface QuestionGroup {
   title: string;
   type: "noType" | "class" | "personal";
   questions: Question[];
   id: number;
 }
 
-export interface Question {
+interface Question {
   required: boolean;
   statement: string;
   imageUrl: string;
@@ -31,12 +31,12 @@ export interface Question {
   id: number;
 }
 
-export interface ExamRouteParams {
+interface ExamRouteParams {
   examId?: string;
   groupId?: string;
 }
 
-export interface ApiQuestionGroup {
+interface ApiQuestionGroup {
   class: boolean;
   personal: boolean;
   position: number;
@@ -45,7 +45,30 @@ export interface ApiQuestionGroup {
   title: string;
 }
 
-export interface ExamsToAnswer {
+interface ExamsToAnswer {
   canAgree: Exam[];
   alreadyAgreed: Exam[];
 }
+
+interface CreateExamForm {
+  title: string;
+  description: string;
+  startedAt: string;
+  endedAt: string;
+  allowAnonymous: boolean;
+  targets: string[];
+}
+
+type ExamTarget = "Professor" | "Grade" | "Student" | "Course";
+
+export type {
+  ExamTarget,
+  CreateExamForm,
+  ExamsToAnswer,
+  ApiQuestionGroup,
+  ExamRouteParams,
+  ExamsState,
+  Exam,
+  Question,
+  QuestionGroup,
+};

@@ -5,6 +5,9 @@ import {
   Button,
   CircularProgress,
   FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  FormGroup,
   Checkbox,
   Select,
   MenuItem,
@@ -15,7 +18,7 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import { useMutation, useQuery } from "react-query";
 import { apiClient } from "../../../api";
-import { Exam, ExamRouteParams } from "../types";
+import { Exam, ExamRouteParams, CreateExamForm, ExamTarget } from "../types";
 import { useAuthContext, useNotificationContext } from "../../../stores";
 import { useHistory, useParams } from "react-router";
 import { ApiEntityWrapper } from "../../../api/types";
@@ -23,6 +26,7 @@ import { useExamsContext } from "../context";
 import { PageLoad } from "../../../components/PageLoad";
 import { FullWidthFormControl } from "../../../components/FullWidthFormControl";
 import { useState } from "react";
+import { EXAM_TARGET_TRANSLATE } from "../constants";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -64,7 +68,7 @@ export function Create() {
     },
   );
 
-  const { isLoading: isLoadingExamTarget } = useQuery(
+  const { data: examTarget, isLoading: isLoadingExamTarget } = useQuery<ApiEntityWrapper<ExamTarget[]>>(
     "examTarget",
     () => {
       return apiClient.get("/exam-target", { headers: { Authorization: `Bearer ${user}` } });
@@ -72,8 +76,8 @@ export function Create() {
     { onSuccess: s => console.log(s) },
   );
 
-  const { handleSubmit, control, reset } = useForm({
-    defaultValues: { title: "", description: "", startedAt: "", endedAt: "", allowAnonymous: false },
+  const { handleSubmit, control, reset, getValues, setValue } = useForm<CreateExamForm>({
+    defaultValues: { title: "", description: "", startedAt: "", endedAt: "", allowAnonymous: false, targets: [] },
     resolver: values => {
       if (values.title === "") {
         return { values, errors: { title: { type: "required", message: "Informe o titulo da avaliação" } } };
@@ -187,6 +191,18 @@ export function Create() {
     },
   );
 
+  function hanadleSelect(name: string) {
+    const { targets } = getValues();
+    const hasName = targets.includes(name);
+    if (hasName) {
+      const filteredTargets = targets.filter(target => target !== name);
+      setValue("targets", filteredTargets);
+      return;
+    }
+
+    setValue("targets", [...targets, name]);
+  }
+
   const isEdit = exam && exam.data && exam.data.data;
 
   function submit(values: any) {
@@ -252,6 +268,34 @@ export function Create() {
                   );
                 }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <FullWidthFormControl>
+                <FormLabel component="legend">Escolha os alvos do exame</FormLabel>
+                <FormGroup>
+                  {examTarget?.data.data.map(name => {
+                    return (
+                      <Controller
+                        key={name}
+                        name={`targets`}
+                        control={control}
+                        render={props => {
+                          return (
+                            <FormControlLabel
+                              {...props}
+                              checked={props.field.value.includes(name)}
+                              control={<Checkbox color="primary" />}
+                              onChange={() => hanadleSelect(name)}
+                              label={EXAM_TARGET_TRANSLATE[name]}
+                            />
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </FormGroup>
+                <FormHelperText>Se não escolher um alvo a avaliação será aplicada a todos</FormHelperText>
+              </FullWidthFormControl>
             </Grid>
             <Grid item xs={12}>
               <Controller
