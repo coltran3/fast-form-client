@@ -125,6 +125,7 @@ export function Create() {
         "/exam",
         {
           ...values,
+          targets: undefined,
           startedAt: dayjs(values.startedAt).toISOString(),
           endedAt: dayjs(values.endedAt).toISOString(),
         },
@@ -173,8 +174,7 @@ export function Create() {
         `/exam/${exam?.data.data.id}`,
         {
           ...values,
-          startedAt: dayjs(values.startedAt).toISOString(),
-          endedAt: dayjs(values.endedAt).toISOString(),
+          targets: undefined,
         },
         { headers: { Authorization: `Bearer ${user}` } },
       );
@@ -277,7 +277,7 @@ export function Create() {
                     return (
                       <Controller
                         key={name}
-                        name={`targets`}
+                        name="targets"
                         control={control}
                         render={props => {
                           return (
