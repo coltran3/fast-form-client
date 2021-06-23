@@ -28,7 +28,7 @@ interface Question {
   imageUrl: string;
   imageAlt: string;
   groupId: number;
-  id: number;
+  id?: number;
 }
 
 interface ExamRouteParams {

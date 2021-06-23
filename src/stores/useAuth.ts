@@ -15,7 +15,17 @@ export interface LoginParams {
 
 export function useAuth() {
   const [user, setUser] = useState<string | undefined>(() => {
-    localStorage.removeItem("user");
+    const userString = localStorage.getItem("user");
+
+    if (userString) {
+      try {
+        const parsedUser = JSON.parse(userString) as string;
+
+        return parsedUser;
+      } catch (error) {
+        localStorage.removeItem("user");
+      }
+    }
 
     return undefined;
   });
@@ -25,6 +35,7 @@ export function useAuth() {
       const token = (await apiClient.post("/auth", loginParams)).data.data as string;
 
       setUser(token);
+      localStorage.setItem("user", JSON.stringify(token));
     } catch (error) {
       throw error.response.data;
     }

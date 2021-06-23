@@ -24,6 +24,7 @@ import { ApiEntityWrapper } from "../../../api/types";
 import { PageLoad } from "../../../components/PageLoad";
 import { DropzoneDialog } from "material-ui-dropzone";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const StyledTextField = styled(TextField)`
   width: 100%;
@@ -53,6 +54,7 @@ export function GroupQuestion() {
     defaultValues: { title: "", type: "noType", questions: [] },
   });
   const [questionId, setQuestionId] = useState<number>();
+  const [isEditQuestion, setIsEditQuestion] = useState(false);
 
   const { fields, remove, swap } = useFieldArray({
     control,
@@ -112,13 +114,13 @@ export function GroupQuestion() {
     Error,
     Omit<QuestionGroup, "id">
   >(
-    ({ title, type }) => {
+    ({ title, type, questions }) => {
       return apiClient.post(
         "/question-group",
         {
           title,
-          class: type === "class",
-          personal: type === "personal",
+          class: type === "class" || undefined,
+          personal: type === "personal" || undefined,
           examId: examId ? parseInt(examId, 10) : "",
         },
         { headers: { Authorization: `Bearer ${user}` } },
@@ -187,8 +189,12 @@ export function GroupQuestion() {
 
   function questionSubmit(values: Partial<Question>) {
     const formValues = getValues();
-    setValue("questions", [...formValues.questions, values] as any);
+    setValue("questions", [
+      ...formValues.questions,
+      { ...values, id: values.id ? values.id : `isNew-${uuidv4()}` },
+    ] as any);
     questionReset({ required: false, statement: "" });
+    setIsEditQuestion(false);
   }
 
   function handleRemoveItem(idx: number) {
@@ -201,7 +207,7 @@ export function GroupQuestion() {
     swap(result.source.index, result.destination.index);
   }
 
-  function handleEdit(id: number) {
+  function handleEdit(id: number | string) {
     const values = getValues();
 
     const value = values.questions.find(question => {
@@ -212,11 +218,25 @@ export function GroupQuestion() {
 
       setValue("questions", newQuestions);
       questionReset(value);
+      setIsEditQuestion(true);
     }
-    console.log("value", value);
   }
 
   function submit(values: QuestionGroup) {
+    values.questions = values.questions.map(question => {
+      if (typeof (question.id as any) === "string" && (question.id as any).includes("isNew")) {
+        return {
+          required: question.required,
+          statement: question.statement,
+          imageUrl: question.imageUrl,
+          imageAlt: question.imageAlt,
+          groupId: question.groupId,
+        };
+      }
+
+      return question;
+    });
+
     isEdit ? editQuestionGroup(values) : createQuestionGroup(values);
   }
 
@@ -324,7 +344,7 @@ export function GroupQuestion() {
                 size="small"
                 onClick={handleQuestionSubmit(questionSubmit)}
               >
-                Adicionar questão
+                {isEditQuestion ? "Editar questão" : "Adicionar questão"}
               </StyledButton>
             </Grid>
             <Grid item xs={12}>
@@ -345,7 +365,7 @@ export function GroupQuestion() {
                             <Grid item>
                               <QuestionCard
                                 idx={idx}
-                                title={statement}
+                                title={`${statement} ${id}`}
                                 isImage={Boolean(imageUrl)}
                                 provided={providedDraggable}
                                 dragHandleProps={providedDraggable.dragHandleProps}

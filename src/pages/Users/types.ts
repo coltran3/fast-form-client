@@ -17,7 +17,6 @@ export interface UserParams extends Omit<User, "id" | "createdAt" | "updatedAt" 
 export enum UserType {
   PROFESSOR = "Professor",
   STUDENT = "Student",
-  USER = "User",
 }
 
 export enum UserRole {

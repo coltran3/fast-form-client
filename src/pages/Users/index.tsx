@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Switch, Route, useHistory, useRouteMatch, Redirect } from "react-router-dom";
 import { lazy } from "react";
 import { Button, List, ListItem, ListItemText } from "@material-ui/core";
