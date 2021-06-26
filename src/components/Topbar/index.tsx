@@ -14,13 +14,13 @@ export function TopBar({ logout }: Props): JSX.Element {
   return (
     <AppBar>
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => push('/exams')}>
+        <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => push("/exams")}>
           <RateReviewIcon />
         </IconButton>
-        <Button color="inherit" onClick={() => push("/exams")}>
-          Criar
+        <Button color="inherit" onClick={() => push("/manage")}>
+          Gerenciar
         </Button>
-        <Button color="inherit" onClick={() => push("/exams")}>
+        <Button color="inherit" onClick={() => push("/answer")}>
           Responder
         </Button>
         <Button color="inherit" onClick={() => push("/users")}>
