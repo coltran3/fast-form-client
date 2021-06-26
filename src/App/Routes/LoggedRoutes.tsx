@@ -21,10 +21,10 @@ export function LoggedRoutes() {
       <TopBar logout={logout} />
       <Container>
         <Switch>
-          <Route path="/manage" component={Exams} />
+          <Route path="/exams" component={Exams} />
           <Route path="/answer" component={Exams} />
           <Route path="/users" component={Users} />
-          <Redirect to="/answer" />
+          <Redirect to="/exams" />
         </Switch>
       </Container>
     </Router>

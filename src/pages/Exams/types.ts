@@ -8,6 +8,7 @@ interface Exam {
   endedAt?: string;
   allowAnonymous: boolean;
   groups: QuestionGroup[];
+  targets: ExamTargetAfterCreated[];
 }
 
 interface ExamsState {
@@ -20,6 +21,8 @@ interface QuestionGroup {
   type: "noType" | "class" | "personal";
   questions: Question[];
   id: number;
+  class: boolean;
+  personal: boolean;
 }
 
 interface Question {
@@ -61,6 +64,14 @@ interface CreateExamForm {
 
 type ExamTarget = "Professor" | "Grade" | "Student" | "Course";
 
+interface ExamTargetAfterCreated {
+  createdAt: string;
+  deletedAt: string | null;
+  id: number;
+  type: ExamTarget;
+  updatedAt: string;
+}
+
 export type {
   ExamTarget,
   CreateExamForm,
@@ -71,4 +82,5 @@ export type {
   Exam,
   Question,
   QuestionGroup,
+  ExamTargetAfterCreated,
 };

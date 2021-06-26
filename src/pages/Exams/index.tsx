@@ -30,10 +30,8 @@ function Main() {
     () => {
       return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
     },
-    { enabled: url === "/manage" },
+    { enabled: url === "/exams" },
   );
-
-  console.log(url);
 
   const { data: examsToAnswer, isLoading: isLoadingExamsToAnswer, isError: isErrorExamsToAnswer } = useQuery<
     ApiEntityWrapper<ExamsToAnswer>
@@ -56,7 +54,7 @@ function Main() {
       <Grid item>
         <Header>
           <FlexSpacer />
-          {url === "/manage" && (
+          {url === "/exams" && (
             <Button variant="contained" color="primary" onClick={handleCreateClick}>
               Cadastrar avaliações
             </Button>

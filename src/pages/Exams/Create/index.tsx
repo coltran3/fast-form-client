@@ -63,6 +63,7 @@ export function Create() {
           startedAt: dayjs(newExam.data.data.startedAt).format("YYYY-MM-DD"),
           endedAt: dayjs(newExam.data.data.endedAt).format("YYYY-MM-DD"),
           allowAnonymous: newExam.data.data.allowAnonymous,
+          targets: newExam.data.data.targets.map(({ type }) => type),
         });
       },
     },
@@ -73,7 +74,6 @@ export function Create() {
     () => {
       return apiClient.get("/exam-target", { headers: { Authorization: `Bearer ${user}` } });
     },
-    { onSuccess: s => console.log(s) },
   );
 
   const { handleSubmit, control, reset, getValues, setValue } = useForm<CreateExamForm>({
@@ -125,9 +125,6 @@ export function Create() {
         "/exam",
         {
           ...values,
-          targets: undefined,
-          startedAt: dayjs(values.startedAt).toISOString(),
-          endedAt: dayjs(values.endedAt).toISOString(),
         },
         { headers: { Authorization: `Bearer ${user}` } },
       );
@@ -174,7 +171,6 @@ export function Create() {
         `/exam/${exam?.data.data.id}`,
         {
           ...values,
-          targets: undefined,
         },
         { headers: { Authorization: `Bearer ${user}` } },
       );
@@ -191,7 +187,7 @@ export function Create() {
     },
   );
 
-  function hanadleSelect(name: string) {
+  function handleSelect(name: string) {
     const { targets } = getValues();
     const hasName = targets.includes(name);
     if (hasName) {
@@ -206,7 +202,6 @@ export function Create() {
   const isEdit = exam && exam.data && exam.data.data;
 
   function submit(values: any) {
-    console.log(values);
     isEdit
       ? editExam({
           ...values,
@@ -285,7 +280,7 @@ export function Create() {
                               {...props}
                               checked={props.field.value.includes(name)}
                               control={<Checkbox color="primary" />}
-                              onChange={() => hanadleSelect(name)}
+                              onChange={() => handleSelect(name)}
                               label={EXAM_TARGET_TRANSLATE[name]}
                             />
                           );

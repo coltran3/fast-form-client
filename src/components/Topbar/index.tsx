@@ -17,7 +17,7 @@ export function TopBar({ logout }: Props): JSX.Element {
         <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => push("/exams")}>
           <RateReviewIcon />
         </IconButton>
-        <Button color="inherit" onClick={() => push("/manage")}>
+        <Button color="inherit" onClick={() => push("/exams")}>
           Gerenciar
         </Button>
         <Button color="inherit" onClick={() => push("/answer")}>
