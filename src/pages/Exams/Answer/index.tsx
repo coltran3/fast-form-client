@@ -49,6 +49,11 @@ const InnerAlert = styled.div`
   flex-direction: column;
 `;
 
+const Image = styled.img`
+  display: block;
+  margin: auto;
+`;
+
 type GroupAnswers = Record<string, number>;
 
 interface AnswerType {
@@ -239,10 +244,11 @@ export function Answer() {
                 <StyledDiv>
                   <Grid container direction="column" spacing={3}>
                     <Grid item>{title}</Grid>
-                    {questions.map(({ id: questionId, statement, required }) => {
+                    {questions.map(({ id: questionId, statement, required, imageUrl, imageAlt }) => {
                       return (
                         <Grid key={questionId} item>
                           <Card>
+                            {Boolean(imageUrl) && <Image src={imageUrl} alt={imageAlt} />}
                             <CardContent>
                               <InnerCardContent>
                                 {statement}

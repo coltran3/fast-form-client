@@ -56,6 +56,7 @@ interface ApiQuestionGroup {
 interface ExamsToAnswer {
   canAgree: Exam[];
   alreadyAgreed: Exam[];
+  answered: Exam[];
 }
 
 interface CreateExamForm {

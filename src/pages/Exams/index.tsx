@@ -147,6 +147,24 @@ function Main() {
                 </GroupDisplaying>
               </Grid>
             )}
+          {examsToAnswer &&
+            examsToAnswer.data &&
+            examsToAnswer.data.data &&
+            Boolean(examsToAnswer.data.data.answered.length) && (
+              <Grid item>
+                <GroupDisplaying title="Avaliações respondidas" defaultDisplay>
+                  <ContentContainer>
+                    {examsToAnswer?.data.data.answered.map(({ id, title, startedAt }) => {
+                      return (
+                        <ContentCard key={id}>
+                          <Card title={title} date={startedAt} done />
+                        </ContentCard>
+                      );
+                    })}
+                  </ContentContainer>
+                </GroupDisplaying>
+              </Grid>
+            )}
         </>
       )}
     </Grid>

@@ -6,9 +6,10 @@ import { FlexSpacer } from "../../components/FlexSpacer";
 
 interface Props {
   logout: () => void;
+  isManager: boolean;
 }
 
-export function TopBar({ logout }: Props): JSX.Element {
+export function TopBar({ logout, isManager }: Props): JSX.Element {
   const { push } = useHistory();
 
   return (
@@ -17,9 +18,11 @@ export function TopBar({ logout }: Props): JSX.Element {
         <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => push("/exams")}>
           <RateReviewIcon />
         </IconButton>
-        <Button color="inherit" onClick={() => push("/exams")}>
-          Gerenciar
-        </Button>
+        {isManager && (
+          <Button color="inherit" onClick={() => push("/exams")}>
+            Gerenciar
+          </Button>
+        )}
         <Button color="inherit" onClick={() => push("/answer")}>
           Responder
         </Button>

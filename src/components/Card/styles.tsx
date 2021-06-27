@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Card as MuiCard, CardContent as MuiCardContent } from "@material-ui/core";
 import MuiNewReleasesIcon from "@material-ui/icons/NewReleases";
+import MuiCheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 export const Container = styled(MuiCard)`
   display: flex;
@@ -32,5 +33,9 @@ export const TitleAndDate = styled.div`
 `;
 
 export const NewReleasesIcon = styled(MuiNewReleasesIcon)`
+  cursor: pointer;
+`;
+
+export const CheckCircleIcon = styled(MuiCheckCircleIcon)`
   cursor: pointer;
 `;

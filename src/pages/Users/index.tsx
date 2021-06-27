@@ -31,17 +31,9 @@ function Main() {
   const { push } = useHistory();
   const { url } = useRouteMatch();
   const { user: token } = useAuthContext();
-  const { data: user, isLoading, isError } = useQuery<ApiEntityWrapper<User>>(
-    "users",
-    () => {
-      return apiClient.get("/user", { headers: { Authorization: `Bearer ${token}` } });
-    },
-    {
-      onSuccess(user) {
-        console.log("user", user);
-      },
-    },
-  );
+  const { data: user, isLoading, isError } = useQuery<ApiEntityWrapper<User>>("users", () => {
+    return apiClient.get("/user", { headers: { Authorization: `Bearer ${token}` } });
+  });
 
   function handleCreateClick() {
     push(`${url}/create`);
@@ -51,9 +43,11 @@ function Main() {
     <MainWrapper>
       <Header>
         <PagesTitle>Usuário</PagesTitle>
-        <Button variant="contained" color="primary" onClick={handleCreateClick}>
-          Cadastrar usuários
-        </Button>
+        {user?.data.data.role !== "regular" && (
+          <Button variant="contained" color="primary" onClick={handleCreateClick}>
+            Cadastrar usuários
+          </Button>
+        )}
       </Header>
       {isLoading ? (
         <PageLoad />

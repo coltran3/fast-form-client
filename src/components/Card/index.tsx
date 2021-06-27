@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Content, TitleAndDate, NewReleasesIcon } from "./styles";
+import { Container, Content, TitleAndDate, NewReleasesIcon, CheckCircleIcon } from "./styles";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -10,13 +10,14 @@ import dayjs from "dayjs";
 interface Icard {
   title: string;
   date?: string;
-  onClick: () => void;
+  onClick?: () => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  done?: boolean;
   // status: "aberto" | "fechado" | "recente" | "novo";
 }
 
-export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) {
+export default function Card({ title, date, onEdit, onDelete, onClick, done }: Icard) {
   const formatedDate = Boolean(date) ? dayjs(date).format("DD/MM/YYYY") : undefined;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -31,8 +32,7 @@ export default function Card({ title, date, onEdit, onDelete, onClick }: Icard) 
   return (
     <Container>
       <Content>
-        <NewReleasesIcon onClick={onClick} />
-
+        {done ? <CheckCircleIcon /> : <NewReleasesIcon onClick={onClick} />}
         <Tooltip title={title} aria-label="add">
           <TitleAndDate onClick={onClick}>
             <strong>{title.length > 10 ? title.substring(0, 10) + "..." : title}</strong>
