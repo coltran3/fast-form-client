@@ -23,6 +23,11 @@ interface QuestionGroup {
   id: number;
   class: boolean;
   personal: boolean;
+  grade?: Grade;
+}
+
+interface Grade {
+  id: number;
 }
 
 interface Question {

@@ -52,7 +52,7 @@ const InnerAlert = styled.div`
 type GroupAnswers = Record<string, number>;
 
 interface AnswerType {
-  score: number;
+  score: number | null;
   questionId: number;
   type: "Answer";
   gradeId?: number;
@@ -90,9 +90,9 @@ export function Answer() {
       onSuccess: newQuestionGroup => {
         let obj = {};
 
-        newQuestionGroup.data.data.forEach(({ id, questions }) => {
+        newQuestionGroup.data.data.forEach(({ id, questions, grade }) => {
           questions.forEach(({ id: questionId }) => {
-            obj = { [`${id}-${questionId}`]: 0, ...obj };
+            obj = { [`${id}-${questionId}${grade?.id ? `-${grade.id}` : ""}`]: null, ...obj };
           });
         });
 
@@ -106,7 +106,7 @@ export function Answer() {
         "/exam-agreement",
         {
           examId: examId ? parseInt(examId, 10) : "",
-          anonymouns: exam?.data.data.allowAnonymous ? answerAsAnonymous : false,
+          anonymous: exam?.data.data.allowAnonymous ? answerAsAnonymous : false,
         },
         { headers: { Authorization: `Bearer ${user}` } },
       );
@@ -171,7 +171,6 @@ export function Answer() {
       let question: Question | undefined = undefined;
 
       questionGroup?.data.data.forEach(({ id, questions }) => {
-        console.log(`${id}` === requiredNotAnswered[0].split("-")[0]);
         if (`${id}` === requiredNotAnswered[0].split("-")[0]) {
           const q = questions.find(({ id: questionId }) => `${questionId}` === requiredNotAnswered[0].split("-")[1]);
 
@@ -193,8 +192,9 @@ export function Answer() {
     const answersMapped: AnswerType[] = Object.entries(answers).map(([id, answerValue]) => {
       return {
         questionId: parseInt(id.split("-")[1], 10),
-        score: answerValue,
+        score: Boolean(answerValue) ? answerValue : null,
         type: "Answer",
+        gradeId: Boolean(id.split("-")[2]) ? parseInt(id.split("-")[2], 10) : undefined,
       };
     });
 
@@ -221,7 +221,7 @@ export function Answer() {
                   value={answerAsAnonymous}
                   control={<Checkbox color="primary" />}
                   onChange={(_, checked) => setAnswerAsAnonymous(checked)}
-                  label="Permitir respostas anónimas"
+                  label="Responder de forma anónima"
                 />
               )}
             </InnerAlert>
@@ -232,7 +232,7 @@ export function Answer() {
 
           <Description>{exam.data.data.description}</Description>
         </Grid>
-        {questionGroup.data.data.map(({ id, questions, title }) => {
+        {questionGroup.data.data.map(({ id, questions, title, grade }) => {
           return (
             <Grid key={id} item xs={12}>
               <Paper elevation={3}>
@@ -257,11 +257,14 @@ export function Answer() {
                               <FormLabel>Resposta:</FormLabel>
                               <RadioGroup
                                 style={{ flexDirection: "row" }}
-                                value={answers[`${id}-${questionId}`] ?? 0}
+                                value={answers[`${id}-${questionId}${grade?.id ? `-${grade.id}` : ""}`] ?? null}
                                 onChange={e =>
                                   setAnswers({
                                     ...answers,
-                                    [`${id}-${questionId}`]: parseInt(e.target.value, 10),
+                                    [`${id}-${questionId}${grade?.id ? `-${grade.id}` : ""}`]: parseInt(
+                                      e.target.value,
+                                      10,
+                                    ),
                                   })
                                 }
                               >
@@ -270,7 +273,7 @@ export function Answer() {
                                 <FormControlLabel value={3} control={<Radio />} label="3" />
                                 <FormControlLabel value={4} control={<Radio />} label="4" />
                                 <FormControlLabel value={5} control={<Radio />} label="5" />
-                                <FormControlLabel value="doesntApply" control={<Radio />} label="Não se aplica" />
+                                <FormControlLabel value={0} control={<Radio />} label="Não se aplica" />
                               </RadioGroup>
                             </CardActions>
                           </Card>
@@ -284,11 +287,13 @@ export function Answer() {
           );
         })}
 
-        <Grid container item alignItems="flex-end" xs={12}>
-          <Button variant="contained" color="primary" size="large" onClick={submitQuestions}>
-            {isLoadingAnswer ? <CircularProgress color="secondary" size={26} /> : "ENVIAR"}
-          </Button>
-        </Grid>
+        {!hasntStarteAnswering && (
+          <Grid container item alignItems="flex-end" xs={12}>
+            <Button variant="contained" color="primary" size="large" onClick={submitQuestions}>
+              {isLoadingAnswer ? <CircularProgress color="secondary" size={26} /> : "ENVIAR"}
+            </Button>
+          </Grid>
+        )}
       </Grid>
     );
   }

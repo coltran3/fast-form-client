@@ -114,7 +114,7 @@ export function GroupQuestion() {
     Error,
     Omit<QuestionGroup, "id">
   >(
-    ({ title, type, questions }) => {
+    ({ title, type }) => {
       return apiClient.post(
         "/question-group",
         {
