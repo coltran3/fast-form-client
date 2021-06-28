@@ -156,10 +156,10 @@ export function Answer() {
   function submitQuestions() {
     const requiredQuestion: string[] = [];
 
-    questionGroup?.data.data.forEach(({ id, questions }) => {
+    questionGroup?.data.data.forEach(({ id, questions, grade }) => {
       questions.forEach(({ id: questionId, required }) => {
         if (required) {
-          requiredQuestion.push(`${id}-${questionId}`);
+          requiredQuestion.push(`${id}-${questionId}${grade?.id ? `-${grade.id}` : ""}`);
         }
       });
     });
