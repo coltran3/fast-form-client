@@ -365,7 +365,7 @@ export function GroupQuestion() {
                             <Grid item>
                               <QuestionCard
                                 idx={idx}
-                                title={`${statement} ${id}`}
+                                title={statement}
                                 isImage={Boolean(imageUrl)}
                                 provided={providedDraggable}
                                 dragHandleProps={providedDraggable.dragHandleProps}

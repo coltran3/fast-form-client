@@ -18,6 +18,7 @@ import {
   FormControlLabel,
   Tooltip,
   Button,
+  TextareaAutosize,
   Checkbox,
   CircularProgress,
 } from "@material-ui/core";
@@ -84,6 +85,7 @@ export function Answer() {
       return apiClient.get("/exam/me", { headers: { Authorization: `Bearer ${user}` } });
     },
   );
+
   const [answerAsAnonymous, setAnswerAsAnonymous] = useState(false);
   const { data: questionGroup, isLoading: isLoadingQuestionGroup } = useQuery<ApiEntityWrapper<QuestionGroup[]>>(
     ["questionGroup", examId],
@@ -117,11 +119,33 @@ export function Answer() {
       );
     },
     {
-      onSuccess: () => {
+      onSuccess: c => {
+        console.log(c);
         refetchExamsToAnswer();
       },
       onError: () => {
         showNotification({ message: "Ocorreu algum erro ao tentar começar a responder um exame", type: "error" });
+      },
+    },
+  );
+
+  const [observation, setObservation] = useState("");
+
+  const { mutate: makeObservation, isLoading: isLoadingMakeObservation } = useMutation(
+    (data: string) => {
+      return apiClient.put(
+        `/exam-agreement?examId=${examId}`,
+        { observation: data },
+        { headers: { Authorization: `Bearer ${user}` } },
+      );
+    },
+    {
+      onSuccess: () => {
+        showNotification({ message: "Avaliação respondida com sucesso", type: "success" });
+        push("/exams");
+      },
+      onError: () => {
+        showNotification({ message: "Houve um erro ao tentar responder a avaliação", type: "error" });
       },
     },
   );
@@ -134,8 +158,7 @@ export function Answer() {
     },
     {
       onSuccess: () => {
-        showNotification({ message: "Avaliação respondida com sucesso", type: "success" });
-        push("/exams");
+        makeObservation(observation);
       },
       onError: () => {
         showNotification({ message: "Houve um erro ao tentar responder a avaliação", type: "error" });
@@ -292,11 +315,24 @@ export function Answer() {
             </Grid>
           );
         })}
+        <Grid item xs={12}>
+          <FormLabel>Comentario:</FormLabel>
+          <TextareaAutosize
+            value={observation}
+            onChange={e => setObservation(e.target.value)}
+            style={{ width: "100%" }}
+            rowsMin={4}
+          />
+        </Grid>
 
         {!hasntStarteAnswering && (
           <Grid container item alignItems="flex-end" xs={12}>
             <Button variant="contained" color="primary" size="large" onClick={submitQuestions}>
-              {isLoadingAnswer ? <CircularProgress color="secondary" size={26} /> : "ENVIAR"}
+              {isLoadingAnswer || isLoadingMakeObservation ? (
+                <CircularProgress color="secondary" size={26} />
+              ) : (
+                "ENVIAR"
+              )}
             </Button>
           </Grid>
         )}
