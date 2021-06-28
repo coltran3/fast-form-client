@@ -37,14 +37,16 @@ function Main() {
   useQuery(
     "examCsv",
     () => {
-      return apiClient.get(`/export/csv/${examIdToExport}`);
+      return apiClient.post(`/export/csv/${examIdToExport}`, undefined, {
+        headers: { Authorization: `Bearer ${user}` },
+      });
     },
     {
       enabled: Boolean(examIdToExport),
       onSuccess: c => {
-        console.log(c);
-        setExamIdToExport(undefined);
+        window.open(c.data.data, "_blank");
       },
+      onSettled: () => setExamIdToExport(undefined),
     },
   );
 
