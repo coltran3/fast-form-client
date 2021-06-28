@@ -25,12 +25,27 @@ function Main() {
   const { push } = useHistory();
   const { user } = useAuthContext();
   const { url } = useRouteMatch();
+  const [examIdToExport, setExamIdToExport] = useState<number | undefined>();
   const { data: exams, isLoading, isError } = useQuery<ApiEntityWrapper<Exam[]>>(
     ["exams", url],
     () => {
       return apiClient.get("/exam", { headers: { Authorization: `Bearer ${user}` } });
     },
     { enabled: url === "/exams" },
+  );
+
+  useQuery(
+    "examCsv",
+    () => {
+      return apiClient.get(`/export/csv/${examIdToExport}`);
+    },
+    {
+      enabled: Boolean(examIdToExport),
+      onSuccess: c => {
+        console.log(c);
+        setExamIdToExport(undefined);
+      },
+    },
   );
 
   const { data: examsToAnswer, isLoading: isLoadingExamsToAnswer, isError: isErrorExamsToAnswer } = useQuery<
@@ -84,6 +99,9 @@ function Main() {
                           date={startedAt}
                           onClick={() => {
                             push(`${url}/${id}/groups`);
+                          }}
+                          onExport={() => {
+                            setExamIdToExport(id);
                           }}
                           onEdit={() => {
                             push(`${url}/edit/${id}`);

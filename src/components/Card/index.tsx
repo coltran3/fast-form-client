@@ -5,6 +5,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { IconButton, ListItemIcon, MenuItem, Tooltip, Typography } from "@material-ui/core";
 import { CardActions, Menu } from "@material-ui/core";
+import GetAppIcon from "@material-ui/icons/GetApp";
 import dayjs from "dayjs";
 
 interface Icard {
@@ -12,12 +13,13 @@ interface Icard {
   date?: string;
   onClick?: () => void;
   onDelete?: () => void;
+  onExport?: () => void;
   onEdit?: () => void;
   done?: boolean;
   // status: "aberto" | "fechado" | "recente" | "novo";
 }
 
-export default function Card({ title, date, onEdit, onDelete, onClick, done }: Icard) {
+export default function Card({ title, date, onEdit, onDelete, onClick, done, onExport }: Icard) {
   const formatedDate = Boolean(date) ? dayjs(date).format("DD/MM/YYYY") : undefined;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -47,6 +49,19 @@ export default function Card({ title, date, onEdit, onDelete, onClick, done }: I
               <MoreVertIcon />
             </IconButton>
             <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+              {!!onExport && (
+                <MenuItem
+                  onClick={() => {
+                    onExport();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <GetAppIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Exportar</Typography>
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   onEdit();
