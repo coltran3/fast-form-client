@@ -65,6 +65,7 @@ function Main() {
             <ListItemText>Matrícula: {user.data.data.enrollment}</ListItemText>
           </ListItem>
 
+          {Boolean(user.data.data.email) && <ListItem>E-mail: {user.data.data.email}</ListItem>}
           <ListItem>
             <ListItemText>Tipo: {USER_TYPE_TRANSLATE_OBJ[user.data.data.type]}</ListItemText>
           </ListItem>

@@ -4,6 +4,7 @@ export interface User {
   type: UserType;
   role: UserRole;
   id: 0;
+  email?: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string;

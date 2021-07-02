@@ -45,8 +45,8 @@ export function Create() {
     },
   );
 
-  function submit({ confirmPassword, ...data }: UserParams) {
-    createUser(data);
+  function submit({ confirmPassword, email, ...data }: UserParams) {
+    createUser({ email: email ? email : undefined, ...data });
   }
 
   return (
@@ -84,6 +84,24 @@ export function Create() {
                 return (
                   <StyledTextField
                     label="CPF"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                  />
+                );
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field: { onChange, value }, fieldState: { error } }) => {
+                return (
+                  <StyledTextField
+                    label="E-mail"
                     variant="outlined"
                     value={value}
                     onChange={onChange}
