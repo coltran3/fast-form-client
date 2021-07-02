@@ -158,7 +158,12 @@ export function Answer() {
     },
     {
       onSuccess: () => {
-        makeObservation(observation);
+        if (observation) {
+          makeObservation(observation);
+          return;
+        }
+        showNotification({ message: "Avaliação respondida com sucesso", type: "success" });
+        push("/exams");
       },
       onError: () => {
         showNotification({ message: "Houve um erro ao tentar responder a avaliação", type: "error" });
