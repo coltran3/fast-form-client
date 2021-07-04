@@ -75,6 +75,7 @@ export function Answer() {
       return apiClient.get(`/exam/${examId}`, { headers: { Authorization: `Bearer ${user}` } });
     },
     {
+      onSuccess: c => console.log(c),
       enabled: Boolean(examId),
     },
   );
@@ -95,6 +96,8 @@ export function Answer() {
     {
       enabled: Boolean(examId),
       onSuccess: newQuestionGroup => {
+        console.log(newQuestionGroup.data.data);
+
         let obj = {};
 
         newQuestionGroup.data.data.forEach(({ id, questions, grade }) => {
@@ -271,6 +274,7 @@ export function Answer() {
               <Paper elevation={3}>
                 <StyledDiv>
                   <Grid container direction="column" spacing={3}>
+                    {grade && grade.subject && grade.subject.title && <Grid item>{grade.subject.title}</Grid>}{" "}
                     <Grid item>{title}</Grid>
                     {questions.map(({ id: questionId, statement, required, imageUrl, imageAlt }) => {
                       return (

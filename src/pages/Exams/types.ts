@@ -28,6 +28,11 @@ interface QuestionGroup {
 
 interface Grade {
   id: number;
+  subject: GradeSubject;
+}
+
+interface GradeSubject {
+  title: string;
 }
 
 interface Question {
